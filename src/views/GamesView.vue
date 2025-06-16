@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import type { Game, GiantbombResponse } from '@/interfaces/GiantbombResponse'
 import jsonp from 'jsonp'
 import { onMounted, ref, watch, type Ref } from 'vue'
@@ -6,6 +7,7 @@ import { useRoute } from 'vue-router'
 
 const games: Ref<Game[]> = ref([])
 const route = useRoute()
+const loading: Ref<boolean> = ref(false)
 
 onMounted(async () => {
   searchGames()
@@ -16,38 +18,22 @@ watch(route, async () => {
 })
 
 async function searchGames() {
+  loading.value = true
+  games.value = []
   if (route.params.gameName) {
-    const games = await fetchGames()
-    setGames(games)
+    games.value = await fetchGames()
   } else {
-    getGames()
+    games.value = await getGames()
   }
+  loading.value = false
 }
 
-const getGames = () => {
-  jsonp(
-    'https://www.giantbomb.com/api/games/?',
-    {
-      param: `api_key=${import.meta.env.VITE_GIANT_BOMB_KEY}&sort=original_release_date:desc&limit=10&format=jsonp&json_callback=test`,
-    },
-    test,
-  )
-
-  function test(err: Error | null, data: GiantbombResponse) {
-    if (err) {
-      console.log(err)
-      return
-    }
-    games.value = data.results
-  }
-}
-
-function fetchGames(): Promise<[]> {
+function getGames(): Promise<[]> {
   return new Promise((resolve, reject) => {
     jsonp(
       'https://www.giantbomb.com/api/games/?',
       {
-        param: `api_key=${import.meta.env.VITE_GIANT_BOMB_KEY}&sort=original_release_date:desc&filter=name:${route.params.gameName}&limit=10&format=jsonp&json_callback=searchGames`,
+        param: `api_key=${import.meta.env.VITE_GIANT_BOMB_KEY}&sort=original_release_date:desc&limit=10&format=jsonp&json_callback=none`,
       },
       (err: Error | null, data: GiantbombResponse) => {
         if (err) {
@@ -60,8 +46,22 @@ function fetchGames(): Promise<[]> {
   })
 }
 
-function setGames(foundGames: Game[]) {
-  games.value = foundGames
+function fetchGames(): Promise<[]> {
+  return new Promise((resolve, reject) => {
+    jsonp(
+      'https://www.giantbomb.com/api/games/?',
+      {
+        param: `api_key=${import.meta.env.VITE_GIANT_BOMB_KEY}&sort=original_release_date:desc&filter=name:${route.params.gameName}&limit=10&format=jsonp&json_callback=none`,
+      },
+      (err: Error | null, data: GiantbombResponse) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(data.results)
+        }
+      },
+    )
+  })
 }
 </script>
 
@@ -71,6 +71,7 @@ function setGames(foundGames: Game[]) {
   <div
     class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 xl:gap-x-8"
   >
+    <LoadingSpinner v-if="loading" />
     <a v-for="game in games" :key="game.id" href="#" class="group bg-green-200 rounded-2xl">
       <img
         :src="game.image.medium_url"
