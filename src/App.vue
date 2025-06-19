@@ -1,6 +1,27 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView, useRouter } from 'vue-router'
 import SearchBar from './components/SearchBar.vue'
+import { onMounted, ref } from 'vue'
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
+const isLoggedIn = ref(false)
+
+const auth = getAuth()
+const router = useRouter()
+onMounted(() => {
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      isLoggedIn.value = true
+    } else {
+      isLoggedIn.value = false
+    }
+  })
+})
+const handleSignOut = () => {
+  signOut(auth).then(() => {
+    console.log('singed out')
+    router.push('/games')
+  })
+}
 </script>
 
 <template>
@@ -12,9 +33,10 @@ import SearchBar from './components/SearchBar.vue'
 
     <div class="wrapper uppercase">
       <nav class="flex gap-2">
-        <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/" v-if="isLoggedIn">My Library</RouterLink>
         <RouterLink to="/games">Games</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
+        <RouterLink to="/signIn" v-if="!isLoggedIn">Sign In</RouterLink>
+        <a @click="handleSignOut" v-if="isLoggedIn" class="uppercase">Sign Out</a>
         <SearchBar />
       </nav>
     </div>
@@ -26,5 +48,7 @@ import SearchBar from './components/SearchBar.vue'
 nav > a {
   display: flex;
   align-items: center;
+  border-radius: 10px;
+  padding: 5px;
 }
 </style>

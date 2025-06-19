@@ -4,6 +4,9 @@ import type { Game, GiantbombResponse } from '@/interfaces/GiantbombResponse'
 import jsonp from 'jsonp'
 import { onMounted, ref, watch, type Ref } from 'vue'
 import { useRoute } from 'vue-router'
+// import { database, database2, usersRef } from '../main'
+// import { useCollection } from 'vuefire'
+// import { collection } from 'firebase/firestore'
 
 const games: Ref<Game[]> = ref([])
 const route = useRoute()
@@ -11,6 +14,8 @@ const loading: Ref<boolean> = ref(false)
 
 onMounted(async () => {
   searchGames()
+  // const users = useCollection(collection(database2, 'users'))
+  // console.log('users', users.value)
 })
 
 watch(route, async () => {
