@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useDatabase } from 'vuefire'
-import { ref as dbRef, push, update } from 'firebase/database'
+import { ref as dbRef, push, set } from 'firebase/database'
 import { getAuth } from 'firebase/auth'
 
 defineProps({
@@ -14,12 +14,9 @@ function addToMyLibrary(gameId: number) {
   console.log('add ' + gameId)
   const user = auth.currentUser
   if (user) {
-    const userRef = dbRef(db, `users/${user.uid}/games`)
-    const newGame = push(userRef)
-    update(dbRef(db), newGame)
-    // set(userRef, {
-    //   games: [gameId],
-    // })
+    const gamesRef = dbRef(db, `users/${user.uid}/games`)
+    const newGameRef = push(gamesRef)
+    set(newGameRef, gameId)
   }
 }
 </script>
@@ -49,7 +46,6 @@ function addToMyLibrary(gameId: number) {
 
 <style scoped>
 img:hover {
-  /* background-color: pink; */
   opacity: 0.5;
 }
 </style>
