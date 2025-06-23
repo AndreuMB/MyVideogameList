@@ -23,7 +23,7 @@ a,
 } */
 
 a:hover {
-  background-color: hsl(279, 100%, 82%);
+  background-color: #dfa3ff;
 }
 
 /* @media (min-width: 1024px) {
@@ -38,3 +38,11 @@ a:hover {
     padding: 0 2rem;
   }
 } */
+
+.background-secondary {
+  background-color: var(--secondary-color);
+}
+
+.background-terciary {
+  background-color: var(--terciary-color);
+}

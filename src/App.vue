@@ -1,21 +1,21 @@
 <script setup lang="ts">
 import { RouterLink, RouterView, useRouter } from 'vue-router'
 import SearchBar from './components/SearchBar.vue'
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
-const isLoggedIn = ref(false)
 
+const isLoggedIn = ref(false)
 const auth = getAuth()
 const router = useRouter()
-onMounted(() => {
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      isLoggedIn.value = true
-    } else {
-      isLoggedIn.value = false
-    }
-  })
+// onMounted(() => {
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    isLoggedIn.value = true
+  } else {
+    isLoggedIn.value = false
+  }
 })
+// })
 const handleSignOut = () => {
   signOut(auth).then(() => {
     console.log('singed out')
