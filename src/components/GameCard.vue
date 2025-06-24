@@ -11,7 +11,6 @@ defineProps({
 const auth = getAuth()
 const db = useDatabase()
 function addToMyLibrary(gameId: number) {
-  console.log('add ' + gameId)
   const user = auth.currentUser
   if (user) {
     const gamesRef = dbRef(db, `users/${user.uid}/games`)

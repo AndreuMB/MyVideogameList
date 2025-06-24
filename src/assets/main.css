@@ -2,7 +2,6 @@
 @import 'tailwindcss';
 
 #app {
-  /* max-width: 1280px; */
   margin: 0 auto;
   padding: 2rem;
   font-weight: normal;
@@ -13,31 +12,12 @@ a,
   text-decoration: none;
   color: rgb(15, 29, 24);
   transition: 0.4s;
-  /* padding: 0; */
 }
-
-/* @media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
-} */
 
 a:hover {
   background-color: #dfa3ff;
+  border-radius: 5px;
 }
-
-/* @media (min-width: 1024px) {
-  body {
-    display: flex;
-    place-items: center;
-  }
-
-  #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
-  }
-} */
 
 .background-secondary {
   background-color: var(--secondary-color);
@@ -45,4 +25,21 @@ a:hover {
 
 .background-terciary {
   background-color: var(--terciary-color);
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.authForm {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+
+  input {
+    border: solid 1px;
+    border-color: var(--terciary-color);
+  }
 }
