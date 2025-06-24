@@ -35,7 +35,7 @@ const handleSignOut = () => {
       <nav class="flex gap-2">
         <RouterLink to="/" v-if="isLoggedIn">My Library</RouterLink>
         <RouterLink to="/games">Games</RouterLink>
-        <RouterLink to="/signIn" v-if="!isLoggedIn">Sign In</RouterLink>
+        <RouterLink to="/auth" v-if="!isLoggedIn">Sign In</RouterLink>
         <a @click="handleSignOut" v-if="isLoggedIn" class="uppercase">Sign Out</a>
         <SearchBar />
       </nav>

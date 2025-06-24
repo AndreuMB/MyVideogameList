@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import {
-  signInWithEmailAndPassword,
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from 'firebase/auth'
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -16,27 +11,15 @@ const email = ref('')
 const password = ref('')
 const errorMessage = ref('')
 const router = useRouter()
-const login = () => {
-  console.log('login')
-  signInWithEmailAndPassword(getAuth(), email.value, password.value)
-    .then((data: unknown) => {
-      console.log('scucces', data)
+
+const register = () => {
+  console.log('register')
+  createUserWithEmailAndPassword(getAuth(), email.value, password.value)
+    .then(() => {
       router.push('/')
     })
     .catch((error: unknown) => {
       console.log('fail', error)
-    })
-}
-
-const signInGoogle = () => {
-  const provider = new GoogleAuthProvider()
-  signInWithPopup(getAuth(), provider)
-    .then((result) => {
-      console.log(result.user)
-      router.push('/')
-    })
-    .catch((error) => {
-      console.log(error)
     })
 }
 </script>
@@ -44,9 +27,7 @@ const signInGoogle = () => {
 <template>
   <div class="w-full rounded-lg shadow border md:mt-0 sm:max-w-md xl:p-0 authForm">
     <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-      <h1 class="text-xl font-bold leading-tight tracking-tightmd:text-2xl">
-        Sign in to your account
-      </h1>
+      <h1 class="text-xl font-bold leading-tight tracking-tightmd:text-2xl">Create your account</h1>
       <form class="space-y-4 md:space-y-6" @submit.prevent>
         <div>
           <label for="email" class="block mb-2 text-sm font-medium">Your email</label>
@@ -70,25 +51,19 @@ const signInGoogle = () => {
         </div>
         {{ errorMessage }}
         <button
-          @click="login"
+          @click="register"
           class="w-full font-medium rounded-lg text-sm px-5 py-2.5 text-center"
         >
-          Sign in
+          Register
         </button>
-        <button
-          @click="signInGoogle"
-          class="flex flex-wrap justify-center items-center gap-4 w-full font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-        >
-          <img src="/src/assets/googleIcon.png" alt="gicon" class="w-6 h-6" />
-          Sign in with Google
-        </button>
+
         <p class="text-sm font-light">
-          Don't have an account yet?
+          Do you already have an account?
           <span
             role="button"
-            @click="() => emit('registerForm', true)"
+            @click="() => emit('registerForm', false)"
             class="font-medium cursor-pointer"
-            >Sign up</span
+            >Sign in</span
           >
         </p>
       </form>
