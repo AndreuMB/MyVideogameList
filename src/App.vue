@@ -26,13 +26,14 @@ const handleSignOut = () => {
 
 <template>
   <header class="flex justify-between mb-10 bg-green-200 rounded-2xl p-4">
-    <div class="flex gap-4">
-      <img alt="Vue logo" src="@/assets/logo.svg" width="24" height="24" />
-      <p class="text-black text-xl flex items-center">MyVideogameList</p>
+    <div class="flex gap-4 items-center">
+      <img alt="web logo" src="@/assets/pixel-heart.webp" width="27" height="27" />
+      <!-- <i class="pi pi-heart-fill text-2xl webIcon"></i> -->
+      <p class="text-black text-xl">MyVideogameList</p>
     </div>
 
     <div class="wrapper uppercase">
-      <nav class="flex gap-2">
+      <nav class="flex gap-2 menu">
         <RouterLink to="/" v-if="isLoggedIn">My Library</RouterLink>
         <RouterLink to="/games">Games</RouterLink>
         <RouterLink to="/auth" v-if="!isLoggedIn">Sign In</RouterLink>

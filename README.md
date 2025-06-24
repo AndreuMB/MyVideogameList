@@ -3,6 +3,7 @@
 This template should help get you started developing with Vue 3 in Vite.
 https://tailwindcss.com/
 https://vuefire.vuejs.org/guide/getting-started.html
+https://primevue.org/icons/
 
 ## Recommended IDE Setup
 

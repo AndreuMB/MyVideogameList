@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import { useDatabase } from 'vuefire'
-import { ref as dbRef, push, set } from 'firebase/database'
+import { ref as dbRef, push, ref, remove, set } from 'firebase/database'
 import { getAuth } from 'firebase/auth'
+import type { GameDb } from '../views/MyLibraryView.vue'
+import type { Game } from '@/interfaces/GiantbombResponse'
 
-defineProps({
-  game: { type: Object, required: true },
-  isLoggedIn: { type: Boolean, required: true },
-})
+defineProps<{
+  game: Game
+  isLoggedIn: boolean
+  userLibrary?: GameDb
+}>()
+
+const emit = defineEmits(['onDelete'])
 
 const auth = getAuth()
 const db = useDatabase()
@@ -16,6 +21,16 @@ function addToMyLibrary(gameId: number) {
     const gamesRef = dbRef(db, `users/${user.uid}/games`)
     const newGameRef = push(gamesRef)
     set(newGameRef, gameId)
+  }
+}
+
+async function deleteFromMyLibrary(gameDbId: string) {
+  const user = auth.currentUser
+  if (user) {
+    // const gamesRef = dbRef(db, `users/${user.uid}/games`)
+    const gamesRef2 = ref(db, `users/${user.uid}/games/${gameDbId}`)
+    remove(gamesRef2)
+    emit('onDelete')
   }
 }
 </script>
@@ -31,14 +46,24 @@ function addToMyLibrary(gameId: number) {
     </div>
     <div class="flex justify-between p-3 items-center space-x-3">
       <p class="text-lg font-medium text-primary">{{ game.name }}</p>
-      <button
-        v-if="isLoggedIn"
-        @click="addToMyLibrary(game.id)"
-        type="button"
-        class="font-medium rounded-lg text-sm p-2 px-4 text-primary"
-      >
-        Save
-      </button>
+      <div v-if="isLoggedIn">
+        <button
+          v-if="!game.ref"
+          @click="addToMyLibrary(game.id)"
+          type="button"
+          class="font-medium rounded-lg text-sm p-2 px-4 text-primary"
+        >
+          <i class="pi pi-bookmark"></i>
+        </button>
+        <button
+          v-else
+          @click="deleteFromMyLibrary(game.ref)"
+          type="button"
+          class="font-medium rounded-lg text-sm p-2 px-4 text-primary"
+        >
+          <i class="pi pi-bookmark-fill"></i>
+        </button>
+      </div>
     </div>
   </div>
 </template>

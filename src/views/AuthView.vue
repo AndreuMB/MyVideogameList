@@ -4,23 +4,6 @@ import RegisterForm from '@/components/RegisterForm.vue'
 import { ref } from 'vue'
 
 const registerRoute = ref(false)
-// const route = useRoute()
-
-// onMounted(async () => {
-//   searchGames()
-// })
-
-// watch(route, async () => {
-//   searchGames()
-// })
-
-// async function searchGames() {
-//   if (route.params.gameName) {
-//     games.value = await fetchGames()
-//   } else {
-//     games.value = await getGames()
-//   }
-// }
 </script>
 
 <template>

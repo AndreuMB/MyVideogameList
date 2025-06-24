@@ -30,6 +30,7 @@ export interface Game {
   original_release_date: string
   platforms: Platform[]
   site_detail_url: string
+  ref?: string
 }
 
 export interface Image {
