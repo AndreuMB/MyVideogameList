@@ -1,30 +1,42 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/MyLibraryView.vue'
+import { getCurrentUser } from 'vuefire'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'Home',
       component: HomeView,
+      meta: { isProtected: true },
     },
     {
       path: '/games',
-      name: 'games',
+      name: 'Games',
       component: () => import('../views/GamesView.vue'),
     },
     {
       path: '/games/:gameName',
-      name: 'gamesSearch',
+      name: 'GamesSearch',
       component: () => import('../views/GamesView.vue'),
     },
     {
       path: '/auth',
-      name: 'auth',
+      name: 'Auth',
       component: () => import('../views/AuthView.vue'),
     },
+    {
+      path: '/forbidden',
+      name: 'Forbidden',
+      component: () => import('../views/ForbiddenView.vue'),
+    },
   ],
+})
+
+router.beforeEach(async (to) => {
+  const user = await getCurrentUser()
+  if (to.meta.isProtected && !user) return { name: 'Forbidden' }
 })
 
 export default router
