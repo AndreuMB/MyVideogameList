@@ -1,22 +1,11 @@
 <script setup async lang="ts">
-import { useDatabase } from 'vuefire'
-import { ref as dbRef, get } from 'firebase/database'
 import jsonp from 'jsonp'
 import type { Game, GiantbombResponse } from '@/interfaces/GiantbombResponse'
 import { ref, type Ref } from 'vue'
 import GameCard from '@/components/GameCard.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-
-interface UserProfile {
-  id: string
-  games?: object
-}
-
-export interface GameDb {
-  id: string
-  gameId: string
-}
+import { getLibraryGamesId } from '@/utils/utils'
 
 const exampleGame: Game = {
   aliases: 'GTA V, Grand Theft Auto 5',
@@ -83,67 +72,59 @@ const exampleGame: Game = {
     },
   ],
   site_detail_url: 'https://www.giantbomb.com/games/3030-4664/',
-  ref: 'custom_ref_123',
 }
 
 const games: Ref<Game[]> = ref([exampleGame])
-const gamesDb: Ref<GameDb[]> = ref([])
-const db = useDatabase()
+
 const auth = getAuth()
 const isLoading = ref(true)
 
 onAuthStateChanged(auth, async (user) => {
   if (user) {
-    const uid = user.uid
-    loadGames(uid)
+    loadGames()
   }
 })
 
-const loadGames = async (uid: string) => {
+const loadGames = async () => {
   isLoading.value = true
-  gamesDb.value = await getUserGamesDb(uid)
-  games.value = await getLibraryGames(gamesDb.value)
+  // gamesDb.value = await getUserGamesDb(uid)
+  const gamesIdLibrary = await getLibraryGamesId()
+  games.value = await getLibraryGames(gamesIdLibrary)
   isLoading.value = false
 }
 
-const reloadGames = () => {
-  const user = auth.currentUser
-  if (user) loadGames(user.uid)
-}
+// const getUserGamesDb = async (userId: string): Promise<GameDb[]> => {
+//   const userRef = await get(dbRef(db, `users/${userId}`))
+//   const profile: UserProfile = await userRef.val()
 
-const getUserGamesDb = async (userId: string): Promise<GameDb[]> => {
-  const userRef = await get(dbRef(db, `users/${userId}`))
-  const profile: UserProfile = await userRef.val()
+//   if (!profile || !profile.games) return []
 
-  if (!profile || !profile.games) return []
+//   const gamesDb: GameDb[] = []
 
-  const gamesDb: GameDb[] = []
+//   for (const [key, value] of Object.entries(profile.games)) {
+//     const gameId = value
+//     const gameRef: GameDb = {
+//       id: key,
+//       gameId,
+//     }
+//     gamesDb.push(gameRef)
+//   }
 
-  for (const [key, value] of Object.entries(profile.games)) {
-    const gameId = value
-    const gameRef: GameDb = {
-      id: key,
-      gameId,
-    }
-    gamesDb.push(gameRef)
-  }
+//   return gamesDb
+// }
 
-  return gamesDb
-}
-
-const getLibraryGames = async (gamesDb: GameDb[]): Promise<Game[]> => {
+const getLibraryGames = async (gamesId: number[]): Promise<Game[]> => {
   const gamesData: Game[] = []
 
-  for await (const gameDb of gamesDb) {
-    const game = await searchGame(gameDb.gameId)
-    game.ref = gameDb.id
+  for await (const gameId of gamesId) {
+    const game = await searchGame(gameId)
     gamesData.push(game)
   }
 
   return gamesData
 }
 
-function searchGame(gameId: string): Promise<Game> {
+function searchGame(gameId: number): Promise<Game> {
   return new Promise((resolve, reject) => {
     jsonp(
       'https://www.giantbomb.com/api/games/?',
@@ -173,7 +154,7 @@ function searchGame(gameId: string): Promise<Game> {
     <GameCard
       :game="game"
       :is-logged-in="true"
-      @on-delete="reloadGames"
+      @on-state-change="loadGames"
       v-for="game in games"
       :key="game.id"
     />

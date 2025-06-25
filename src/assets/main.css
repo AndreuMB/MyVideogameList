@@ -6,6 +6,9 @@
   margin: 0 auto;
   padding: 2rem;
   font-weight: normal;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .menu > a {
@@ -25,12 +28,6 @@
 
 .background-terciary {
   background-color: var(--terciary-color);
-}
-
-#app {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
 }
 
 .authForm {

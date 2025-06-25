@@ -1,36 +1,56 @@
 <script setup lang="ts">
 import { useDatabase } from 'vuefire'
-import { ref as dbRef, push, ref, remove, set } from 'firebase/database'
+import { ref as dbRef, get, set } from 'firebase/database'
 import { getAuth } from 'firebase/auth'
-import type { GameDb } from '../views/MyLibraryView.vue'
 import type { Game } from '@/interfaces/GiantbombResponse'
+import { getLibraryGamesId } from '@/utils/utils'
+import { onMounted, ref, type Ref } from 'vue'
 
-defineProps<{
+const props = defineProps<{
   game: Game
   isLoggedIn: boolean
-  userLibrary?: GameDb
 }>()
 
-const emit = defineEmits(['onDelete'])
+// const emit = defineEmits(['onStateChange'])
+const isOnLibrary: Ref<boolean> = ref(false)
 
 const auth = getAuth()
 const db = useDatabase()
-function addToMyLibrary(gameId: number) {
-  const user = auth.currentUser
-  if (user) {
-    const gamesRef = dbRef(db, `users/${user.uid}/games`)
-    const newGameRef = push(gamesRef)
-    set(newGameRef, gameId)
-  }
-}
 
-async function deleteFromMyLibrary(gameDbId: string) {
+onMounted(async () => {
+  const gamesId = await getLibraryGamesId()
+  isOnLibrary.value = gamesId.includes(props.game.id)
+})
+
+let timer: number
+
+const toogleBookmark = (gameId: number, add: boolean) => {
   const user = auth.currentUser
   if (user) {
-    // const gamesRef = dbRef(db, `users/${user.uid}/games`)
-    const gamesRef2 = ref(db, `users/${user.uid}/games/${gameDbId}`)
-    remove(gamesRef2)
-    emit('onDelete')
+    isOnLibrary.value = !isOnLibrary.value
+
+    // debounce
+    if (timer) {
+      clearTimeout(timer)
+    }
+
+    timer = setTimeout(async () => {
+      const gamesRef = dbRef(db, `users/${user.uid}/games`)
+      if (add) {
+        let gamesId = (await get(gamesRef)).val()
+        if (Array.isArray(gamesId)) {
+          if (gamesId.indexOf(gameId) >= 0) return
+          gamesId.push(gameId)
+        } else gamesId = [gameId]
+        set(gamesRef, gamesId)
+      } else {
+        const libraryGamesId = await getLibraryGamesId()
+        const index = libraryGamesId.indexOf(gameId)
+        if (index === -1) return
+        libraryGamesId.splice(index, 1)
+        set(gamesRef, libraryGamesId)
+      }
+    }, 1000)
   }
 }
 </script>
@@ -48,8 +68,8 @@ async function deleteFromMyLibrary(gameDbId: string) {
       <p class="text-lg font-medium text-primary">{{ game.name }}</p>
       <div v-if="isLoggedIn">
         <button
-          v-if="!game.ref"
-          @click="addToMyLibrary(game.id)"
+          v-if="!isOnLibrary"
+          @click="toogleBookmark(game.id, true)"
           type="button"
           class="font-medium rounded-lg text-sm p-2 px-4 text-primary"
         >
@@ -57,7 +77,7 @@ async function deleteFromMyLibrary(gameDbId: string) {
         </button>
         <button
           v-else
-          @click="deleteFromMyLibrary(game.ref)"
+          @click="toogleBookmark(game.id, false)"
           type="button"
           class="font-medium rounded-lg text-sm p-2 px-4 text-primary"
         >

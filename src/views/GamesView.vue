@@ -29,18 +29,18 @@ watch(route, async () => {
   searchGames()
 })
 
-async function searchGames() {
+const searchGames = async () => {
   loading.value = true
   games.value = []
   if (route.params.gameName) {
-    games.value = await fetchGames()
+    games.value = await searchGamesByName()
   } else {
-    games.value = await getGames()
+    games.value = await getNewGames()
   }
   loading.value = false
 }
 
-function getGames(): Promise<Game[]> {
+function getNewGames(): Promise<Game[]> {
   return new Promise((resolve, reject) => {
     jsonp(
       'https://www.giantbomb.com/api/games/?',
@@ -58,7 +58,7 @@ function getGames(): Promise<Game[]> {
   })
 }
 
-function fetchGames(): Promise<Game[]> {
+function searchGamesByName(): Promise<Game[]> {
   return new Promise((resolve, reject) => {
     jsonp(
       'https://www.giantbomb.com/api/games/?',
@@ -79,32 +79,17 @@ function fetchGames(): Promise<Game[]> {
 
 <template>
   <h1 class="text-4xl mb-10">GAMES</h1>
-  <!-- <SearchBar @game-search="setGames" /> -->
   <div
     class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 xl:gap-x-8"
   >
     <LoadingSpinner v-if="loading" />
-    <GameCard :game="game" :is-logged-in="isLoggedIn" v-for="game in games" :key="game.id" />
-    <!-- <div v-for="game in games" :key="game.id" class="bg-green-200 rounded-2xl">
-      <a>
-        <img
-          :src="game.image.medium_url"
-          alt="Tall"
-          class="rounded-t-2xl h-100 w-full object-cover"
-        />
-        <div class="flex justify-between">
-          <p class="p-4 pt-1 mt-1 text-lg font-medium">{{ game.name }}</p>
-        </div>
-      </a>
-      <button
-        v-if="isLoggedIn"
-        @click="addToMyLibrary(game.id)"
-        type="button"
-        class="font-medium rounded-lg text-sm p-2"
-      >
-        Save
-      </button>
-    </div> -->
+    <GameCard
+      @on-state-change="searchGames"
+      :game="game"
+      :is-logged-in="isLoggedIn"
+      v-for="game in games"
+      :key="game.id"
+    />
   </div>
 </template>
 
