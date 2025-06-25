@@ -13,13 +13,22 @@ const errorMessage = ref('')
 const router = useRouter()
 
 const register = () => {
-  console.log('register')
   createUserWithEmailAndPassword(getAuth(), email.value, password.value)
     .then(() => {
       router.push('/')
     })
-    .catch((error: unknown) => {
-      console.log('fail', error)
+    .catch((error: Error) => {
+      switch (error.message) {
+        case 'Firebase: Password should be at least 6 characters (auth/weak-password).':
+          errorMessage.value = 'Password should be at least 6 characters'
+          break
+        case 'Firebase: Error (auth/email-already-in-use).':
+          errorMessage.value = 'Email already in use'
+          break
+        default:
+          errorMessage.value = 'Something went wrong, try again later'
+          break
+      }
     })
 }
 </script>
@@ -28,7 +37,7 @@ const register = () => {
   <div class="w-full rounded-lg shadow border md:mt-0 sm:max-w-md xl:p-0 authForm">
     <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
       <h1 class="text-xl font-bold leading-tight tracking-tightmd:text-2xl">Create your account</h1>
-      <form class="space-y-4 md:space-y-6" @submit.prevent>
+      <form class="space-y-4 md:space-y-6" @submit.prevent="register">
         <div>
           <label for="email" class="block mb-2 text-sm font-medium">Your email</label>
           <input
@@ -49,11 +58,8 @@ const register = () => {
             required
           />
         </div>
-        {{ errorMessage }}
-        <button
-          @click="register"
-          class="w-full font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-        >
+        <p class="font-bold text-red-800">{{ errorMessage }}</p>
+        <button type="submit" class="w-full font-medium rounded-lg text-sm px-5 py-2.5 text-center">
           Register
         </button>
 

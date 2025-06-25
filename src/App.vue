@@ -18,7 +18,6 @@ onAuthStateChanged(auth, (user) => {
 // })
 const handleSignOut = () => {
   signOut(auth).then(() => {
-    console.log('singed out')
     router.push('/games')
   })
 }

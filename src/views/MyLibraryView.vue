@@ -96,8 +96,6 @@ onAuthStateChanged(auth, async (user) => {
   if (user) {
     const uid = user.uid
     loadGames(uid)
-  } else {
-    console.log('u must be signed in')
   }
 })
 
