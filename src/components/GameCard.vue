@@ -11,7 +11,6 @@ const props = defineProps<{
   isLoggedIn: boolean
 }>()
 
-// const emit = defineEmits(['onStateChange'])
 const isOnLibrary: Ref<boolean> = ref(false)
 
 const auth = getAuth()
@@ -19,7 +18,7 @@ const db = useDatabase()
 
 onMounted(async () => {
   const gamesId = await getLibraryGamesId()
-  isOnLibrary.value = gamesId.includes(props.game.id)
+  if (gamesId) isOnLibrary.value = gamesId.includes(props.game.id)
 })
 
 let timer: number
@@ -45,10 +44,12 @@ const toogleBookmark = (gameId: number, add: boolean) => {
         set(gamesRef, gamesId)
       } else {
         const libraryGamesId = await getLibraryGamesId()
-        const index = libraryGamesId.indexOf(gameId)
-        if (index === -1) return
-        libraryGamesId.splice(index, 1)
-        set(gamesRef, libraryGamesId)
+        if (libraryGamesId) {
+          const index = libraryGamesId.indexOf(gameId)
+          if (index === -1) return
+          libraryGamesId.splice(index, 1)
+          set(gamesRef, libraryGamesId)
+        }
       }
     }, 1000)
   }
@@ -57,13 +58,16 @@ const toogleBookmark = (gameId: number, add: boolean) => {
 
 <template>
   <div class="background-secondary rounded-2xl grid grid-cols-1">
-    <div class="rounded-t-2xl h-100 w-full object-cover cursor-pointer background-terciary">
+    <RouterLink
+      :to="`/gameDetails/${game.id}`"
+      class="rounded-t-2xl h-100 w-full object-cover cursor-pointer background-terciary"
+    >
       <img
         :src="game.image.medium_url"
         alt="Tall"
         class="rounded-t-2xl h-100 w-full object-cover cursor-pointer background-secondary"
       />
-    </div>
+    </RouterLink>
     <div class="flex justify-between p-3 items-center space-x-3">
       <p class="text-lg font-medium text-primary">{{ game.name }}</p>
       <div v-if="isLoggedIn">

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import GameCard from '@/components/GameCard.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
-import type { Game, GiantbombResponse } from '@/interfaces/GiantbombResponse'
+import type { Game } from '@/interfaces/GiantbombResponse'
+import { getGamesOrderByRelease, searchGamesByName } from '@/utils/utils'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import jsonp from 'jsonp'
 import { onMounted, ref, watch, type Ref } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -32,48 +32,13 @@ watch(route, async () => {
 const searchGames = async () => {
   loading.value = true
   games.value = []
+
   if (route.params.gameName) {
-    games.value = await searchGamesByName()
+    games.value = await searchGamesByName(route.params.gameName.toString())
   } else {
-    games.value = await getNewGames()
+    games.value = await getGamesOrderByRelease()
   }
   loading.value = false
-}
-
-function getNewGames(): Promise<Game[]> {
-  return new Promise((resolve, reject) => {
-    jsonp(
-      'https://www.giantbomb.com/api/games/?',
-      {
-        param: `api_key=${import.meta.env.VITE_GIANT_BOMB_KEY}&sort=original_release_date:desc&limit=12&format=jsonp&json_callback=none`,
-      },
-      (err: Error | null, data: GiantbombResponse<Game[]>) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(data.results)
-        }
-      },
-    )
-  })
-}
-
-function searchGamesByName(): Promise<Game[]> {
-  return new Promise((resolve, reject) => {
-    jsonp(
-      'https://www.giantbomb.com/api/games/?',
-      {
-        param: `api_key=${import.meta.env.VITE_GIANT_BOMB_KEY}&sort=original_release_date:desc&filter=name:${route.params.gameName}&limit=10&format=jsonp&json_callback=none`,
-      },
-      (err: Error | null, data: GiantbombResponse<Game[]>) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(data.results)
-        }
-      },
-    )
-  })
 }
 </script>
 
@@ -83,13 +48,7 @@ function searchGamesByName(): Promise<Game[]> {
     class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 xl:gap-x-8"
   >
     <LoadingSpinner v-if="loading" />
-    <GameCard
-      @on-state-change="searchGames"
-      :game="game"
-      :is-logged-in="isLoggedIn"
-      v-for="game in games"
-      :key="game.id"
-    />
+    <GameCard :game="game" :is-logged-in="isLoggedIn" v-for="game in games" :key="game.id" />
   </div>
 </template>
 
