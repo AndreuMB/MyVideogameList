@@ -1,5 +1,5 @@
 <script setup async lang="ts">
-import { onMounted, ref, type Ref } from 'vue'
+import { nextTick, onMounted, ref, useTemplateRef, type Ref } from 'vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { useRoute } from 'vue-router'
 import type { Game } from '@/interfaces/GiantbombResponse'
@@ -8,47 +8,48 @@ import { getGameById } from '@/utils/utils'
 const isLoading = ref(true)
 const route = useRoute()
 const game: Ref<Game | null> = ref(null)
+const descriptionHidden = ref(true)
+const description = useTemplateRef('description')
+const descriptionComplete = document.createElement('div')
 
 
 
 onMounted(async () => {
-  isLoading.value = true
+  isLoading.value = false
   const gameId = Number.parseInt(route.params.gameId.toString())
   game.value = await getGameById(gameId, '')
-  // document.querySelectorAll('img[data-src]').forEach(img => {
-  //   console.log('enter foreach img', img);
-
-  //   // img.src = img.getAttribute('data-src');
-  //   // if (img.hasAttribute('data-srcset')) {
-  //   //   img.srcset = img.getAttribute('data-srcset');
-  //   // }
-  // });
   isLoading.value = false
-  setTimeout(()=> {
-  // (document.querySelectorAll('img[data-src]') as NodeListOf<HTMLImageElement>).forEach((img) => {
-  //   console.log('enter foreach img', img);
-  //   img.src = img.getAttribute('data-src')!;
-  //   if (img.getAttribute('data-srcset') != null) {
-  //     img.srcset = img.getAttribute('data-srcset')!;
-  //   }
-  //   // const imgInfo = img.nextElementSibling()
-  // });
 
-  document.querySelectorAll('figure').forEach((figure) => {
-    figure.remove()
-//     console.log("enter figjure" , figure.nextElementSibling);
-// const figureDesc = figure.nextElementSibling
-//    const div = document.createElement("div")
-//   //figure.append(div)
-//   div.append(figure)
-// if (figureDesc) div.append(figureDesc)
-//   document.getElementsByClassName("description")[0].append(div)
+  await nextTick()
 
-  });
+  let gameDescription = game.value.description
+  gameDescription = gameDescription.replace('<h2>Overview</h2>', '')
+  // gameDescription = gameDescription.slice(25, -1); not work cut when still html string
+  game.value.description = gameDescription
 
-  },1)
+  if (description.value) {
+    descriptionComplete.innerHTML = gameDescription
+    descriptionComplete.querySelectorAll('figure').forEach((figure) => {
+      figure.remove()
+    });
+
+    if (descriptionComplete.firstChild) description.value.append(descriptionComplete.firstChild)
+  }
 
 })
+
+const toogleHidden = ()=> {
+  descriptionHidden.value = !descriptionHidden.value
+  if (description.value) {
+    description.value.innerHTML=''
+      if (descriptionHidden.value) {
+
+      if (descriptionComplete.firstChild) description.value.append(descriptionComplete.firstChild)
+      } else {
+        description.value.append(descriptionComplete)
+      }
+    }
+  }
 </script>
 
 <template>
@@ -71,9 +72,12 @@ onMounted(async () => {
         <div
           v-if="game.description"
           :class="$style.description"
-          class="description"
-          v-html="game.description.replace('<h2>Overview</h2>', '')"
-        ></div>
+        >
+          <div ref="description" class="description"></div>
+          <span @click="toogleHidden" class="text-terciary hover:text-terciary-soft cursor-pointer" >
+            {{ descriptionHidden ? "Show more" : "Show less" }}
+          </span>
+        </div>
         <h2 v-else class="text-2xl text-terciary">NO DESCRIPTION AVAILABLE :(</h2>
       </div>
     </div>
@@ -81,34 +85,30 @@ onMounted(async () => {
 </template>
 
 <style module>
-.description figure {
-  /* width: auto !important;
-  max-width: 40%;
-  float: left;
-  margin-right: 1rem;
-  margin-bottom: 0.5rem; */
-  /* img{
-    /* max-height: 200px; */
-    /* margin-top: 100px;
-  } */
-  /* + p {
-    margin-bottom: 100px;
-  } */
-   /* figcaption {
-    color: pink;
-   } */
-}
 
 .description {
-
-    h2 {
-      font-size: 20px;
-      margin-top: 5px;
-    }
+  h2 {
+    font-size: 20px;
+    margin-top: 5px;
+  }
 }
 
-.description div {
-  display: flex;
-  flex-direction: column column;
+table {
+  margin: 20px;
 }
+
+table, td, th {
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  padding: 15px;
+}
+
 </style>
