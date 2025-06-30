@@ -9,6 +9,7 @@ import { onMounted, ref, type Ref } from 'vue'
 const props = defineProps<{
   game: Game
   isLoggedIn: boolean
+  elipsis?: boolean
 }>()
 
 const isOnLibrary: Ref<boolean> = ref(false)
@@ -69,7 +70,7 @@ const toogleBookmark = (gameId: number, add: boolean) => {
       />
     </RouterLink>
     <div class="flex justify-between p-3 items-center space-x-3">
-      <p class="text-lg font-medium text-primary">{{ game.name }}</p>
+      <p :class="`text-lg font-medium text-primary ${ elipsis ? ' text-nowrap overflow-ellipsis overflow-hidden' : ''}`">{{ game.name }}</p>
       <div v-if="isLoggedIn">
         <button
           v-if="!isOnLibrary"

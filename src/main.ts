@@ -5,6 +5,7 @@ import App from './App.vue'
 import router from './router'
 import { initializeApp } from 'firebase/app'
 import { VueFire, VueFireAuth } from 'vuefire'
+import { PrimeVue } from '@primevue/core'
 
 const app = createApp(App)
 const firebaseConfig = {
@@ -21,6 +22,8 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig)
 
 app.use(router)
+.use(PrimeVue)
+
 app.use(VueFire, {
   firebaseApp,
   modules: [VueFireAuth()],

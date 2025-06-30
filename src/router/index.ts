@@ -1,15 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/MyLibraryView.vue'
+import LibraryView from '../views/MyLibraryView.vue'
 import { getCurrentUser } from 'vuefire'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
+      path: '/home',
       name: 'Home',
-      component: HomeView,
+      component: () => import('../views/HomeView.vue'),
       meta: { isProtected: true },
+    },
+    {
+      path: '/',
+      name: 'Library',
+      component: LibraryView,
     },
     {
       path: '/games',
