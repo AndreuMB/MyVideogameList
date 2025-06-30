@@ -45,9 +45,15 @@
   color: var(--terciary-color);
 }
 
+@font-face {
+  font-family: PixelifySans;
+  src: url(src/assets/PixelifySans.ttf);
+}
+
 @theme {
   --color-primary: var(--primary-color);
   --color-secondary: var(--secondary-color);
   --color-terciary: var(--terciary-color);
   --color-terciary-soft: var(--terciary-color-soft);
+  --font-pixel: 'PixelifySans', sans-pixelify;
 }

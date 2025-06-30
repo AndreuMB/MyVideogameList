@@ -7,14 +7,15 @@ const router = createRouter({
   routes: [
     {
       path: '/home',
+      alias: '/',
       name: 'Home',
       component: () => import('../views/HomeView.vue'),
-      meta: { isProtected: true },
     },
     {
-      path: '/',
+      path: '/library',
       name: 'Library',
       component: LibraryView,
+      meta: { isProtected: true },
     },
     {
       path: '/games',
