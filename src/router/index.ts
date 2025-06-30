@@ -36,6 +36,11 @@ const router = createRouter({
       name: 'Forbidden',
       component: () => import('../views/ForbiddenView.vue'),
     },
+    {
+      path: '/:pathMatch(.*)*',
+      name: '404',
+      component: () => import('../views/404View.vue'),
+    },
   ],
 })
 
