@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { setUsername } from '@/utils/utils';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -14,7 +15,8 @@ const router = useRouter()
 
 const register = () => {
   createUserWithEmailAndPassword(getAuth(), email.value, password.value)
-    .then(() => {
+    .then((userCredential) => {
+      setUsername(userCredential.user.uid,email.value.split('@')[0])
       router.push('/')
     })
     .catch((error: Error) => {

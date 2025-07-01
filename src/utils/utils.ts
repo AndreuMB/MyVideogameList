@@ -1,5 +1,5 @@
 import type { Game, GiantbombResponse } from '@/interfaces/GiantbombResponse'
-import { get, ref } from 'firebase/database'
+import { DataSnapshot, get, ref, set } from 'firebase/database'
 import jsonp from 'jsonp'
 import { getCurrentUser, useDatabase } from 'vuefire'
 
@@ -70,6 +70,34 @@ export const exampleGame: Game = {
   site_detail_url: 'https://www.giantbomb.com/games/3030-4664/',
 }
 
+export const getUser = async (userUid:string): Promise<DataSnapshot> => {
+  // const user = await getCurrentUser()
+  // if (!user) return []
+
+  const db = useDatabase()
+
+  const userRef = ref(db, `users/${userUid}`)
+  const user = await get(userRef)
+  return user
+}
+
+export const setUsername = async (userUid:string, username:string): Promise<void> => {
+  const db = useDatabase()
+  const userRef = ref(db, `users/${userUid}/username`)
+  await set(userRef,username)
+}
+
+export const getGamesFromIds = async (gamesId: number[]): Promise<Game[]> => {
+  const gamesData: Game[] = []
+
+  for await (const gameId of gamesId) {
+    const game = await getGameById(gameId)
+    gamesData.push(game)
+  }
+
+  return gamesData
+}
+
 export const getLibraryGamesId = async (): Promise<number[] | null> => {
   const user = await getCurrentUser()
   if (!user) return []
@@ -79,6 +107,54 @@ export const getLibraryGamesId = async (): Promise<number[] | null> => {
   const gamesRef = ref(db, `users/${user.uid}/games`)
   const gamesId = (await get(gamesRef)).val()
   return gamesId
+}
+
+export const getFavoriteGamesId = async (): Promise<number[] | null> => {
+  const user = await getCurrentUser()
+  if (!user) return []
+
+  const db = useDatabase()
+
+  const gamesRef = ref(db, `users/${user.uid}/favorite_games`)
+  const gamesId = (await get(gamesRef)).val()
+  return gamesId
+}
+
+export const addFavoriteGameId = async (gameId:number): Promise<void> => {
+  const user = await getCurrentUser()
+  if (!user) return
+
+  const db = useDatabase()
+
+  const gamesRef = ref(db, `users/${user.uid}/favorite_games`)
+  let gamesId = await getFavoriteGamesId()
+  if (Array.isArray(gamesId)) {
+    if (gamesId.indexOf(gameId) >= 0) return
+
+    gamesId.push(gameId)
+  } else {
+    gamesId = [gameId]
+  }
+  set(gamesRef, gamesId)
+
+}
+
+export const removeFavoriteGameId = async (gameId:number): Promise<void> => {
+  const user = await getCurrentUser()
+  if (!user) return
+
+  const db = useDatabase()
+
+  const gamesRef = ref(db, `users/${user.uid}/favorite_games`)
+
+  const favoriteGamesId = await getFavoriteGamesId()
+
+  if (favoriteGamesId) {
+    const index = favoriteGamesId.indexOf(gameId)
+    if (index === -1) return
+    favoriteGamesId.splice(index, 1)
+    set(gamesRef, favoriteGamesId)
+  }
 }
 
 const getGamesPromise = (

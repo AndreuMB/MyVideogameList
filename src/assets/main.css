@@ -50,4 +50,5 @@
   --color-secondary: var(--secondary-color);
   --color-terciary: var(--terciary-color);
   --color-terciary-soft: var(--terciary-color-soft);
+  --color-terciary-mute: var(--color-terciary-mute);
 }

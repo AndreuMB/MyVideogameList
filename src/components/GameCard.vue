@@ -5,6 +5,7 @@ import { getAuth } from 'firebase/auth'
 import type { Game } from '@/interfaces/GiantbombResponse'
 import { getLibraryGamesId } from '@/utils/utils'
 import { onMounted, ref, type Ref } from 'vue'
+import FavToggle from './FavToggle.vue'
 
 const props = defineProps<{
   game: Game
@@ -58,19 +59,23 @@ const toogleBookmark = (gameId: number, add: boolean) => {
 </script>
 
 <template>
-  <div class="background-secondary rounded-2xl grid grid-cols-1">
-    <RouterLink
+  <div class="background-secondary rounded-2xl grid grid-cols-1 relative">
+    <FavToggle class="absolute top-2 right-2" :gameId="game.id" />
+    <!-- <RouterLink
       :to="`/gameDetails/${game.id}`"
       class="rounded-t-2xl h-100 w-full object-cover cursor-pointer background-terciary"
-    >
+    > -->
       <img
         :src="game.image.medium_url"
         alt="Tall"
-        class="rounded-t-2xl h-100 w-full object-cover cursor-pointer background-secondary"
+        class="rounded-t-2xl h-100 w-full object-cover "
       />
-    </RouterLink>
+    <!-- </RouterLink> -->
     <div class="flex justify-between p-3 items-center space-x-3">
-      <p :class="`text-lg font-medium text-primary ${ elipsis ? ' text-nowrap overflow-ellipsis overflow-hidden' : ''}`">{{ game.name }}</p>
+      <RouterLink :to="`/gameDetails/${game.id}`" :class="`router-link-card text-lg font-medium text-primary
+      ${ elipsis ? ' text-nowrap overflow-ellipsis overflow-hidden' : ''}`">
+        {{ game.name }}
+      </RouterLink>
       <div v-if="isLoggedIn">
         <button
           v-if="!isOnLibrary"
@@ -94,7 +99,5 @@ const toogleBookmark = (gameId: number, add: boolean) => {
 </template>
 
 <style scoped>
-img:hover {
-  opacity: 0.5;
-}
+
 </style>

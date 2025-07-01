@@ -4,6 +4,8 @@
   --secondary-color: #b9f8cf;
   --terciary-color: #db97ff;
   --terciary-color-soft: #ecc9ff;
+  --terciary-color-mute: #8921c1;
+
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;
   --vt-c-white-mute: #f2f2f2;
@@ -82,4 +84,9 @@ button {
 
 button:hover {
   background-color: var(--terciary-color-soft);
+}
+
+.router-link-card:hover {
+  color: var(--terciary-color-mute);
+  /* color: green; */
 }

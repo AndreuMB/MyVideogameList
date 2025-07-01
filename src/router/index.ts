@@ -32,6 +32,12 @@ const router = createRouter({
       component: () => import('../views/GameDetailsView.vue'),
     },
     {
+      path: '/profile',
+      name: 'Profile',
+      component: () => import('../views/ProfileView.vue'),
+      meta: { isProtected: true },
+    },
+    {
       path: '/auth',
       name: 'Auth',
       component: () => import('../views/AuthView.vue'),
