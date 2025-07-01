@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { addFavoriteGameId, getFavoriteGamesId, removeFavoriteGameId } from '@/utils/utils';
-import { onMounted, ref, type Ref } from 'vue';
-import { getCurrentUser } from 'vuefire';
+import { addFavoriteGameId, getFavoriteGamesId, removeFavoriteGameId } from '@/utils/utils'
+import { onMounted, ref, type Ref } from 'vue'
+import { getCurrentUser } from 'vuefire'
+import { useToast } from 'vue-toast-notification'
 
 const props = defineProps<{
   gameId: number
 }>()
 
 const isOnFavorites = ref(false)
-const favGames:Ref<number[] | null> = ref(null)
+const favGames: Ref<number[] | null> = ref(null)
+const toast = useToast()
 
 onMounted(async () => {
   favGames.value = await getFavoriteGamesId()
@@ -20,14 +22,12 @@ let timer = 0
 const toogleFavorite = async () => {
   const user = await getCurrentUser()
   if (user) {
-
     if (!isOnFavorites.value && Array.isArray(favGames.value) && favGames.value.length >= 3) {
-      console.log("cant have more than 3 favorite games");
+      toast.error("You can't have more than 3 favorite games")
       return
     }
 
     isOnFavorites.value = !isOnFavorites.value
-
 
     // debounce
     if (timer) {

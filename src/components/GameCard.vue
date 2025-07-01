@@ -60,20 +60,19 @@ const toogleBookmark = (gameId: number, add: boolean) => {
 
 <template>
   <div class="background-secondary rounded-2xl grid grid-cols-1 relative">
-    <FavToggle class="absolute top-2 right-2" :gameId="game.id" />
+    <FavToggle v-if="isLoggedIn" class="absolute top-2 right-2" :gameId="game.id" />
     <!-- <RouterLink
       :to="`/gameDetails/${game.id}`"
       class="rounded-t-2xl h-100 w-full object-cover cursor-pointer background-terciary"
     > -->
-      <img
-        :src="game.image.medium_url"
-        alt="Tall"
-        class="rounded-t-2xl h-100 w-full object-cover "
-      />
+    <img :src="game.image.medium_url" alt="Tall" class="rounded-t-2xl h-100 w-full object-cover" />
     <!-- </RouterLink> -->
     <div class="flex justify-between p-3 items-center space-x-3">
-      <RouterLink :to="`/gameDetails/${game.id}`" :class="`router-link-card text-lg font-medium text-primary
-      ${ elipsis ? ' text-nowrap overflow-ellipsis overflow-hidden' : ''}`">
+      <RouterLink
+        :to="`/gameDetails/${game.id}`"
+        :class="`router-link-card text-lg font-medium text-primary
+      ${elipsis ? ' text-nowrap overflow-ellipsis overflow-hidden' : ''}`"
+      >
         {{ game.name }}
       </RouterLink>
       <div v-if="isLoggedIn">
@@ -98,6 +97,4 @@ const toogleBookmark = (gameId: number, add: boolean) => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

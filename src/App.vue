@@ -16,13 +16,12 @@ onAuthStateChanged(auth, async (user) => {
 
     let userdb = await getUser(user.uid)
 
-    if((!userdb.val() || !userdb.val().username) && user.email) {
-      setUsername(user.uid,user.email.split('@')[0])
+    if ((!userdb.val() || !userdb.val().username) && user.email) {
+      setUsername(user.uid, user.email.split('@')[0])
     }
 
     userdb = await getUser(user.uid)
     userDisplay.value = userdb.val().username
-
   } else {
     isLoggedIn.value = false
   }
@@ -48,7 +47,7 @@ const handleSignOut = () => {
         <RouterLink to="/" v-if="isLoggedIn">My Library</RouterLink>
         <RouterLink to="/games">Games</RouterLink>
         <RouterLink to="/auth" v-if="!isLoggedIn">Sign In</RouterLink>
-        <RouterLink to="/profile" v-if="isLoggedIn">{{userDisplay}}</RouterLink>
+        <RouterLink to="/profile" v-if="isLoggedIn">{{ userDisplay }}</RouterLink>
         <a @click="handleSignOut" v-if="isLoggedIn" class="uppercase cursor-pointer">Sign Out</a>
         <SearchBar />
       </nav>

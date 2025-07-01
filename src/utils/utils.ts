@@ -70,7 +70,7 @@ export const exampleGame: Game = {
   site_detail_url: 'https://www.giantbomb.com/games/3030-4664/',
 }
 
-export const getUser = async (userUid:string): Promise<DataSnapshot> => {
+export const getUser = async (userUid: string): Promise<DataSnapshot> => {
   // const user = await getCurrentUser()
   // if (!user) return []
 
@@ -81,10 +81,16 @@ export const getUser = async (userUid:string): Promise<DataSnapshot> => {
   return user
 }
 
-export const setUsername = async (userUid:string, username:string): Promise<void> => {
+export const setUsername = async (userUid: string, username: string): Promise<void> => {
   const db = useDatabase()
   const userRef = ref(db, `users/${userUid}/username`)
-  await set(userRef,username)
+  await set(userRef, username)
+}
+
+export const setDescription = async (userUid: string, description: string): Promise<void> => {
+  const db = useDatabase()
+  const userRef = ref(db, `users/${userUid}/description`)
+  await set(userRef, description)
 }
 
 export const getGamesFromIds = async (gamesId: number[]): Promise<Game[]> => {
@@ -120,7 +126,7 @@ export const getFavoriteGamesId = async (): Promise<number[] | null> => {
   return gamesId
 }
 
-export const addFavoriteGameId = async (gameId:number): Promise<void> => {
+export const addFavoriteGameId = async (gameId: number): Promise<void> => {
   const user = await getCurrentUser()
   if (!user) return
 
@@ -136,10 +142,9 @@ export const addFavoriteGameId = async (gameId:number): Promise<void> => {
     gamesId = [gameId]
   }
   set(gamesRef, gamesId)
-
 }
 
-export const removeFavoriteGameId = async (gameId:number): Promise<void> => {
+export const removeFavoriteGameId = async (gameId: number): Promise<void> => {
   const user = await getCurrentUser()
   if (!user) return
 

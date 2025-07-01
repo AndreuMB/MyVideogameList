@@ -6,6 +6,8 @@ import router from './router'
 import { initializeApp } from 'firebase/app'
 import { VueFire, VueFireAuth } from 'vuefire'
 import { PrimeVue } from '@primevue/core'
+import ToastPlugin from 'vue-toast-notification'
+import 'vue-toast-notification/dist/theme-bootstrap.css'
 
 const app = createApp(App)
 const firebaseConfig = {
@@ -21,8 +23,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig)
 
-app.use(router)
-.use(PrimeVue)
+app.use(router).use(PrimeVue).use(ToastPlugin)
 
 app.use(VueFire, {
   firebaseApp,
