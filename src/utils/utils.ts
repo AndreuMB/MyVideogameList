@@ -87,6 +87,12 @@ export const setUsername = async (userUid: string, username: string): Promise<vo
   await set(userRef, username)
 }
 
+export const setProfilePicture = async (userUid: string, pfpUrl: string): Promise<void> => {
+  const db = useDatabase()
+  const userRef = ref(db, `users/${userUid}/picture`)
+  await set(userRef, pfpUrl)
+}
+
 export const setDescription = async (userUid: string, description: string): Promise<void> => {
   const db = useDatabase()
   const userRef = ref(db, `users/${userUid}/description`)

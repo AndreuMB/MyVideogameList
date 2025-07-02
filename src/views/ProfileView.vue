@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import GameCard from '@/components/GameCard.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
+import ModalComponent from '@/components/ModalComponent.vue'
 import type { Game } from '@/interfaces/GiantbombResponse'
 import type { User } from '@/interfaces/User'
 import {
@@ -17,14 +18,16 @@ const user: Ref<User | null> = ref(null)
 const favGames: Ref<Game[] | null> = ref(null)
 const isEditing = ref(false)
 const isLoading = ref(true)
-let userId = ''
+const showModal = ref(false)
+const userId = ref('')
 
 onMounted(async () => {
   isLoading.value = true
   const authUser = await getCurrentUser()
-  const userdb = await getUser(authUser!.uid)
+
   if (authUser) {
-    userId = authUser.uid
+    const userdb = await getUser(authUser.uid)
+    userId.value = authUser.uid
     user.value = userdb.val()
   }
 
@@ -39,8 +42,20 @@ const toogleEdit = () => {
   isEditing.value = !isEditing.value
   // save
   if (!isEditing.value) {
-    setUsername(userId, user.value.username)
-    setDescription(userId, user.value.description)
+    setUsername(userId.value, user.value.username)
+    setDescription(userId.value, user.value.description)
+  }
+}
+
+const updateProfilePicture = async () => {
+  showModal.value = false
+  const userdb = await getUser(userId.value)
+  user.value = userdb.val()
+}
+
+const setDefaultPfP = () => {
+  if (user.value) {
+    user.value.picture = '/src/assets/emptyChest.png'
   }
 }
 </script>
@@ -59,13 +74,35 @@ const toogleEdit = () => {
         required
       />
       <h1 v-else class="text-6xl uppercase text-terciary">{{ user.username }}</h1>
-      <button class="rounded bg-terciary-mute!" @click="toogleEdit">
+      <button class="rounded" @click="toogleEdit">
         <i v-if="isEditing" class="pi pi-save text-2xl! px-3 py-2"></i>
         <i v-else class="pi pi-pen-to-square text-2xl! px-3 py-2"></i>
       </button>
     </div>
-    <div class="flex gap-10 mb-5">
-      <img src="/src//assets/emptyChest.png" alt="pfp" />
+    <div class="flex gap-10 mb-5 max-h-[400px]">
+      <div class="relative max-w-1/3 flex justify-center">
+        <img
+          v-if="user.picture"
+          @error="setDefaultPfP"
+          :src="user.picture"
+          alt="pfp"
+          class="h-full rounded-full"
+        />
+        <img v-else src="/src/assets/emptyChest.png" alt="defaultPfp" class="h-full rounded-full" />
+        <button
+          type="button"
+          @click="() => (showModal = true)"
+          class="absolute bottom-0 right-0 rounded"
+          title="pfpModal"
+        >
+          <i class="pi pi-upload text-2xl! px-3 py-2"></i>
+        </button>
+      </div>
+      <ModalComponent
+        v-if="showModal"
+        :user-id="userId"
+        @close-modal="updateProfilePicture"
+      ></ModalComponent>
       <textarea
         v-if="isEditing"
         class="text-secondary bg-terciary-mute rounded w-full p-5"
@@ -100,3 +137,12 @@ const toogleEdit = () => {
     </div>
   </div>
 </template>
+<style scoped>
+button {
+  background-color: var(--color-terciary-mute);
+}
+
+button:hover {
+  background-color: var(--color-terciary);
+}
+</style>
