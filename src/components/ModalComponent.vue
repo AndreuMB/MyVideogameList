@@ -40,10 +40,11 @@ const imgUrl = ref('')
   background-color: rgba(0, 0, 0, 0.4);
 }
 button {
-  background-color: var(--color-terciary-mute);
+  background-color: var(--color-terciary);
+  color: var(--color-primary);
 }
 
 button:hover {
-  background-color: var(--color-terciary);
+  background-color: var(--color-terciary-soft);
 }
 </style>

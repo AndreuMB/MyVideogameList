@@ -21,6 +21,8 @@ const isLoading = ref(true)
 const showModal = ref(false)
 const userId = ref('')
 
+const defaultProfilePicture = '/src/assets/profile.png'
+
 onMounted(async () => {
   isLoading.value = true
   const authUser = await getCurrentUser()
@@ -55,7 +57,7 @@ const updateProfilePicture = async () => {
 
 const setDefaultPfP = () => {
   if (user.value) {
-    user.value.picture = '/src/assets/emptyChest.png'
+    user.value.picture = defaultProfilePicture
   }
 }
 </script>
@@ -88,7 +90,7 @@ const setDefaultPfP = () => {
           alt="pfp"
           class="h-full rounded-full"
         />
-        <img v-else src="/src/assets/emptyChest.png" alt="defaultPfp" class="h-full rounded-full" />
+        <img v-else :src="defaultProfilePicture" alt="defaultPfp" class="h-full rounded-full" />
         <button
           type="button"
           @click="() => (showModal = true)"
@@ -139,10 +141,11 @@ const setDefaultPfP = () => {
 </template>
 <style scoped>
 button {
-  background-color: var(--color-terciary-mute);
+  background-color: var(--color-terciary);
+  color: var(--color-primary);
 }
 
 button:hover {
-  background-color: var(--color-terciary);
+  background-color: var(--color-terciary-soft);
 }
 </style>

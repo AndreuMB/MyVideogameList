@@ -60,7 +60,7 @@ const toogleBookmark = (gameId: number, add: boolean) => {
 
 <template>
   <div class="background-secondary rounded-2xl grid grid-cols-1 relative">
-    <FavToggle v-if="isLoggedIn" class="absolute top-2 right-2" :gameId="game.id" />
+    <FavToggle v-if="isLoggedIn && isOnLibrary" class="absolute top-2 right-2" :gameId="game.id" />
     <!-- <RouterLink
       :to="`/gameDetails/${game.id}`"
       class="rounded-t-2xl h-100 w-full object-cover cursor-pointer background-terciary"
