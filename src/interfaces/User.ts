@@ -1,6 +1,8 @@
+import type { GameDb } from "./GameDb"
+
 export interface User {
   username: string
-  games: [string]
+  games: GameDb[]
   description: string
   picture: string
 }

@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { useDatabase } from 'vuefire'
-import { ref as dbRef, get, set } from 'firebase/database'
 import { getAuth } from 'firebase/auth'
 import type { Game } from '@/interfaces/GiantbombResponse'
-import { getLibraryGamesId } from '@/utils/utils'
+import { addGameToLibrary, getLibraryGames, removeGameFromLibrary } from '@/utils/utils'
 import { onMounted, ref, type Ref } from 'vue'
 import FavToggle from './FavToggle.vue'
 
@@ -16,11 +14,15 @@ const props = defineProps<{
 const isOnLibrary: Ref<boolean> = ref(false)
 
 const auth = getAuth()
-const db = useDatabase()
 
 onMounted(async () => {
-  const gamesId = await getLibraryGamesId()
-  if (gamesId) isOnLibrary.value = gamesId.includes(props.game.id)
+  const gamesDb = await getLibraryGames()
+
+  if (gamesDb) {
+      for await (const gameDb of Object.keys(gamesDb)) {
+        if(props.game.id == Number(gameDb)) isOnLibrary.value = true
+      }
+  }
 })
 
 let timer: number
@@ -36,22 +38,24 @@ const toogleBookmark = (gameId: number, add: boolean) => {
     }
 
     timer = setTimeout(async () => {
-      const gamesRef = dbRef(db, `users/${user.uid}/games`)
+      // const gamesRef = dbRef(db, `users/${user.uid}/games`)
       if (add) {
-        let gamesId = (await get(gamesRef)).val()
-        if (Array.isArray(gamesId)) {
-          if (gamesId.indexOf(gameId) >= 0) return
-          gamesId.push(gameId)
-        } else gamesId = [gameId]
-        set(gamesRef, gamesId)
+        // let gamesId = (await get(gamesRef)).val()
+        // if (Array.isArray(gamesId)) {
+        //   if (gamesId.indexOf(gameId) >= 0) return
+        //   gamesId.push(gameId)
+        // } else gamesId = [gameId]
+        // set(gamesRef, gamesId)
+        addGameToLibrary(gameId)
       } else {
-        const libraryGamesId = await getLibraryGamesId()
-        if (libraryGamesId) {
-          const index = libraryGamesId.indexOf(gameId)
-          if (index === -1) return
-          libraryGamesId.splice(index, 1)
-          set(gamesRef, libraryGamesId)
-        }
+        removeGameFromLibrary(gameId)
+        // const libraryGamesId = await getLibraryGamesId()
+        // if (libraryGamesId) {
+        //   const index = libraryGamesId.indexOf(gameId)
+        //   if (index === -1) return
+        //   libraryGamesId.splice(index, 1)
+        //   set(gamesRef, libraryGamesId)
+        // }
       }
     }, 1000)
   }

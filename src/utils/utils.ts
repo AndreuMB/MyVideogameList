@@ -1,3 +1,4 @@
+import type { GameDb } from '@/interfaces/GameDb'
 import type { Game, GiantbombResponse } from '@/interfaces/GiantbombResponse'
 import { DataSnapshot, get, ref, set } from 'firebase/database'
 import jsonp from 'jsonp'
@@ -71,9 +72,6 @@ export const exampleGame: Game = {
 }
 
 export const getUser = async (userUid: string): Promise<DataSnapshot> => {
-  // const user = await getCurrentUser()
-  // if (!user) return []
-
   const db = useDatabase()
 
   const userRef = ref(db, `users/${userUid}`)
@@ -104,13 +102,13 @@ export const getGamesFromIds = async (gamesId: number[]): Promise<Game[]> => {
 
   for await (const gameId of gamesId) {
     const game = await getGameById(gameId)
-    gamesData.push(game)
+    if (game) gamesData.push(game)
   }
 
   return gamesData
 }
 
-export const getLibraryGamesId = async (): Promise<number[] | null> => {
+export const getLibraryGames = async (): Promise<GameDb[] | null> => {
   const user = await getCurrentUser()
   if (!user) return []
 
@@ -119,6 +117,18 @@ export const getLibraryGamesId = async (): Promise<number[] | null> => {
   const gamesRef = ref(db, `users/${user.uid}/games`)
   const gamesId = (await get(gamesRef)).val()
   return gamesId
+}
+
+export const getLibraryGamesDetails = async (gamesDb: GameDb[]): Promise<Game[]> => {
+  const gamesData: Game[] = []
+
+  for await (const gameDb of Object.keys(gamesDb)) {
+    const game = await getGameById(Number(gameDb))
+
+    if (game) gamesData.push(game)
+  }
+
+  return gamesData
 }
 
 export const getFavoriteGamesId = async (): Promise<number[] | null> => {
@@ -130,6 +140,27 @@ export const getFavoriteGamesId = async (): Promise<number[] | null> => {
   const gamesRef = ref(db, `users/${user.uid}/favorite_games`)
   const gamesId = (await get(gamesRef)).val()
   return gamesId
+}
+
+export const addGameToLibrary = async (gameId:number) => {
+  const user = await getCurrentUser()
+  if (!user) return
+  const db = useDatabase()
+
+  const gamesRef = ref(db, `users/${user.uid}/games/${gameId}`)
+
+  set(gamesRef, {isInLibrary:true})
+}
+
+export const removeGameFromLibrary = async (gameId:number) => {
+  const user = await getCurrentUser()
+  if (!user) return
+  const db = useDatabase()
+
+  const gamesRef = ref(db, `users/${user.uid}/games/${gameId}`)
+
+  set(gamesRef, {isInLibrary:false})
+
 }
 
 export const addFavoriteGameId = async (gameId: number): Promise<void> => {
@@ -173,7 +204,7 @@ const getGamesPromise = (
   filter?: string,
   sort?: string,
   limit?: string,
-): Promise<Game[]> => {
+): Promise<Game[] | undefined> => {
   const apikey = import.meta.env.VITE_GIANT_BOMB_KEY
   const jsonpParam = 'format=jsonp&json_callback=none'
 
@@ -194,7 +225,7 @@ const getGamesPromise = (
   })
 }
 
-export const getGamesOrderByRelease = async (): Promise<Game[]> => {
+export const getGamesOrderByRelease = async (): Promise<Game[] | undefined> => {
   const fieldList = 'id,name,image'
   const filter = `original_release_date:2000|${new Date().toISOString()}`
   const sort = 'original_release_date:desc'
@@ -205,9 +236,11 @@ export const getGamesOrderByRelease = async (): Promise<Game[]> => {
 export const getGameById = async (
   gameId: number,
   fieldList: string = 'id,name,image',
-): Promise<Game> => {
+): Promise<Game | undefined> => {
   const filter = `id:${gameId}`
-  return (await getGamesPromise(fieldList, filter))[0]
+  const games = await getGamesPromise(fieldList, filter)
+  if (games) return games[0]
+  return undefined
 }
 
 export const searchGamesByName = async (gameName: string) => {

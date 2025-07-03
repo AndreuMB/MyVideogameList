@@ -4,7 +4,7 @@ import { ref, type Ref } from 'vue'
 import GameCard from '@/components/GameCard.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { getGameById, getLibraryGamesId } from '@/utils/utils'
+import { getLibraryGames, getLibraryGamesDetails } from '@/utils/utils'
 
 const games: Ref<Game[]> = ref([])
 
@@ -20,20 +20,13 @@ onAuthStateChanged(auth, async (user) => {
 const loadGames = async () => {
   isLoading.value = true
   // gamesDb.value = await getUserGamesDb(uid)
-  const gamesIdLibrary = await getLibraryGamesId()
-  if (gamesIdLibrary) games.value = await getLibraryGames(gamesIdLibrary)
+  const gamesLibrary = await getLibraryGames()
+  console.log({gamesLibrary});
+
+  if (gamesLibrary) games.value = await getLibraryGamesDetails(gamesLibrary)
+  console.log(games.value);
+
   isLoading.value = false
-}
-
-const getLibraryGames = async (gamesId: number[]): Promise<Game[]> => {
-  const gamesData: Game[] = []
-
-  for await (const gameId of gamesId) {
-    const game = await getGameById(gameId)
-    gamesData.push(game)
-  }
-
-  return gamesData
 }
 </script>
 
