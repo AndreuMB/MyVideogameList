@@ -108,7 +108,7 @@ export const getGamesFromIds = async (gamesId: number[]): Promise<Game[]> => {
   return gamesData
 }
 
-export const getLibraryGames = async (): Promise<GameDb[] | null> => {
+export const getGamesDb = async (): Promise<GameDb[] | null> => {
   const user = await getCurrentUser()
   if (!user) return []
 
@@ -116,17 +116,22 @@ export const getLibraryGames = async (): Promise<GameDb[] | null> => {
 
   const gamesRef = ref(db, `users/${user.uid}/games`)
   const gamesId = (await get(gamesRef)).val()
-  return gamesId
+
+  return Object.values(gamesId)
 }
 
-export const getLibraryGamesDetails = async (gamesDb: GameDb[]): Promise<Game[]> => {
+export const getGamesDbDetails = async (gamesDb: GameDb[]): Promise<Game[]> => {
   const gamesData: Game[] = []
 
-  for await (const gameDb of Object.keys(gamesDb)) {
-    const game = await getGameById(Number(gameDb))
+  // for await (const gameDb of Object.keys(gamesDb)) {
+  //   const game = await getGameById(Number(gameDb))
+  //   if (game) gamesData.push(game)
+  // }
 
+  gamesDb.forEach(async (gamedb) => {
+    const game = await getGameById(gamedb.id)
     if (game) gamesData.push(game)
-  }
+  })
 
   return gamesData
 }
@@ -142,25 +147,24 @@ export const getFavoriteGamesId = async (): Promise<number[] | null> => {
   return gamesId
 }
 
-export const addGameToLibrary = async (gameId:number) => {
+export const addGameToLibrary = async (gameId: number) => {
   const user = await getCurrentUser()
   if (!user) return
   const db = useDatabase()
 
   const gamesRef = ref(db, `users/${user.uid}/games/${gameId}`)
 
-  set(gamesRef, {isInLibrary:true})
+  set(gamesRef, { id: gameId, isInLibrary: true })
 }
 
-export const removeGameFromLibrary = async (gameId:number) => {
+export const removeGameFromLibrary = async (gameId: number) => {
   const user = await getCurrentUser()
   if (!user) return
   const db = useDatabase()
 
   const gamesRef = ref(db, `users/${user.uid}/games/${gameId}`)
 
-  set(gamesRef, {isInLibrary:false})
-
+  set(gamesRef, { isInLibrary: false })
 }
 
 export const addFavoriteGameId = async (gameId: number): Promise<void> => {

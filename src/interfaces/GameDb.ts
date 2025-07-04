@@ -1,5 +1,6 @@
 export interface GameDb {
-  isInLibrary:boolean
-  isFavorite?:boolean
-  state?:boolean
+  id: number
+  isInLibrary: boolean
+  isFavorite?: boolean
+  state?: boolean
 }

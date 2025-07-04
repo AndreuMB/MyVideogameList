@@ -4,12 +4,14 @@ import { ref, type Ref } from 'vue'
 import GameCard from '@/components/GameCard.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { getLibraryGames, getLibraryGamesDetails } from '@/utils/utils'
+import { getGamesDb, getGamesDbDetails } from '@/utils/utils'
+import type { GameDb } from '@/interfaces/GameDb'
 
 const games: Ref<Game[]> = ref([])
 
 const auth = getAuth()
 const isLoading = ref(true)
+const gamesDb: Ref<GameDb[] | null> = ref(null)
 
 onAuthStateChanged(auth, async (user) => {
   if (user) {
@@ -20,11 +22,16 @@ onAuthStateChanged(auth, async (user) => {
 const loadGames = async () => {
   isLoading.value = true
   // gamesDb.value = await getUserGamesDb(uid)
-  const gamesLibrary = await getLibraryGames()
-  console.log({gamesLibrary});
+  // const gamesLibrary = await getGamesDb()
+  const gamesUser = await getGamesDb()
 
-  if (gamesLibrary) games.value = await getLibraryGamesDetails(gamesLibrary)
-  console.log(games.value);
+  if (gamesUser) {
+    const gamesInLibrary = gamesUser.filter((game) => game.isInLibrary)
+    console.log({ gamesInLibrary })
+
+    gamesDb.value = gamesInLibrary
+    games.value = await getGamesDbDetails(gamesDb.value)
+  }
 
   isLoading.value = false
 }
@@ -38,7 +45,17 @@ const loadGames = async () => {
     v-else
     class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 xl:gap-x-8"
   >
-    <GameCard :game="game" :is-logged-in="true" v-for="game in games" :key="game.id" />
+    <GameCard
+      :game="game"
+      :gameDb="
+        gamesDb && gamesDb.filter((gamedb) => gamedb.id === game.id)[0]
+          ? gamesDb.filter((gamedb) => gamedb.id === game.id)[0]
+          : null
+      "
+      :is-logged-in="true"
+      v-for="game in games"
+      :key="game.id"
+    />
   </div>
 
   <div v-if="games.length <= 0 && !isLoading" class="flex items-center text-6xl">
