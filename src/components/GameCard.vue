@@ -5,6 +5,7 @@ import { addGameToLibrary, removeGameFromLibrary } from '@/utils/utils'
 import { onMounted, ref, type Ref } from 'vue'
 import FavToggle from './FavToggle.vue'
 import type { GameDb } from '@/interfaces/GameDb'
+import DropdownGameState from './DropdownGameState.vue'
 
 const props = defineProps<{
   game: Game
@@ -50,8 +51,13 @@ const toogleBookmark = (gameId: number, add: boolean) => {
 
 <template>
   <div class="background-secondary rounded-2xl grid grid-cols-1 relative">
-    <FavToggle v-if="isLoggedIn && isInLibrary" class="absolute top-2 right-2" :game-id="game.id" :game-db="gameDb" />
+
+    <div class="absolute flex justify-between w-full p-2">
+      <DropdownGameState :game-id="game.id" />
+      <FavToggle v-if="isLoggedIn && isInLibrary" :game-id="game.id" :game-db="gameDb" />
+    </div>
     <img :src="game.image.medium_url" alt="Tall" class="rounded-t-2xl h-100 w-full object-cover" />
+
     <div class="flex justify-between p-3 items-center space-x-3">
       <RouterLink
         :to="`/gameDetails/${game.id}`"

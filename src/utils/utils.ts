@@ -262,3 +262,24 @@ export const searchGamesByName = async (gameName: string) => {
   const limit = '12'
   return await getGamesPromise(fieldList, filter, sort, limit)
 }
+
+export const changeGameState = async (gameId: number, gameStateId: number): Promise<void> => {
+  const user = await getCurrentUser()
+  if (!user) return
+  const db = useDatabase()
+
+  const gameRef = ref(db, `users/${user.uid}/games/${gameId}/gameState/`)
+
+  set(gameRef, gameStateId)
+}
+
+export const getGameState = async (gameId: number): Promise<number> => {
+  const user = await getCurrentUser()
+  if (!user) return 0
+  const db = useDatabase()
+
+  const gameRef = ref(db, `users/${user.uid}/games/${gameId}/gameState/`)
+
+  const gameState = await get(gameRef)
+  return gameState.val()
+}
