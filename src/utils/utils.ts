@@ -195,7 +195,7 @@ export const countUserFavorites = async () => {
   let count = 0
   if (gamesDb) {
     gamesDb.forEach((game)=> {
-      if (game.favorite) count++
+      if (game.favorite === true) count++
     })
   }
   return count

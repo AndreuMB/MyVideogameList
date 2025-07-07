@@ -24,7 +24,7 @@ onMounted(async () => {
 })
 
 let timer = 0
-let inProgress = true
+let inProgress = false
 const toogleFavorite = async () => {
   const user = await getCurrentUser()
   if (user) {
