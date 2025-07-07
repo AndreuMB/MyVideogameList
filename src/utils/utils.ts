@@ -115,37 +115,32 @@ export const getGamesDb = async (): Promise<GameDb[] | null> => {
   const db = useDatabase()
 
   const gamesRef = ref(db, `users/${user.uid}/games`)
-  const gamesId = (await get(gamesRef)).val()
-
-  return Object.values(gamesId)
+  const gamesId:GameDb[] | null  = (await get(gamesRef)).val()
+  if (gamesId) return Object.values(gamesId)
+  return null
 }
 
 export const getGamesDbDetails = async (gamesDb: GameDb[]): Promise<Game[]> => {
   const gamesData: Game[] = []
 
-  // for await (const gameDb of Object.keys(gamesDb)) {
-  //   const game = await getGameById(Number(gameDb))
-  //   if (game) gamesData.push(game)
-  // }
-
-  gamesDb.forEach(async (gamedb) => {
-    const game = await getGameById(gamedb.id)
+  for await (const gameDb of gamesDb) {
+    const game = await getGameById(gameDb.id)
     if (game) gamesData.push(game)
-  })
+  }
 
   return gamesData
 }
 
-export const getFavoriteGamesId = async (): Promise<number[] | null> => {
-  const user = await getCurrentUser()
-  if (!user) return []
+// export const getFavoriteGamesId = async (): Promise<number[] | null> => {
+//   const user = await getCurrentUser()
+//   if (!user) return []
 
-  const db = useDatabase()
+//   const db = useDatabase()
 
-  const gamesRef = ref(db, `users/${user.uid}/favorite_games`)
-  const gamesId = (await get(gamesRef)).val()
-  return gamesId
-}
+//   const gamesRef = ref(db, `users/${user.uid}/favorite_games`)
+//   const gamesId = (await get(gamesRef)).val()
+//   return gamesId
+// }
 
 export const addGameToLibrary = async (gameId: number) => {
   const user = await getCurrentUser()
@@ -162,45 +157,58 @@ export const removeGameFromLibrary = async (gameId: number) => {
   if (!user) return
   const db = useDatabase()
 
-  const gamesRef = ref(db, `users/${user.uid}/games/${gameId}`)
+  const gamesRef = ref(db, `users/${user.uid}/games/${gameId}/isInLibrary`)
 
-  set(gamesRef, { isInLibrary: false })
+  set(gamesRef, false)
 }
 
-export const addFavoriteGameId = async (gameId: number): Promise<void> => {
+// export const addFavoriteGameId = async (gameId: number): Promise<void> => {
+//   const user = await getCurrentUser()
+//   if (!user) return
+
+//   const db = useDatabase()
+
+//   const gamesRef = ref(db, `users/${user.uid}/favorite_games`)
+//   let gamesId = await getFavoriteGamesId()
+//   if (Array.isArray(gamesId)) {
+//     if (gamesId.indexOf(gameId) >= 0) return
+
+//     gamesId.push(gameId)
+//   } else {
+//     gamesId = [gameId]
+//   }
+//   set(gamesRef, gamesId)
+
+// }
+export const addGameToFavorites = async (gameId: number): Promise<void> => {
   const user = await getCurrentUser()
   if (!user) return
-
   const db = useDatabase()
 
-  const gamesRef = ref(db, `users/${user.uid}/favorite_games`)
-  let gamesId = await getFavoriteGamesId()
-  if (Array.isArray(gamesId)) {
-    if (gamesId.indexOf(gameId) >= 0) return
+  const gameRef = ref(db, `users/${user.uid}/games/${gameId}/favorite`)
 
-    gamesId.push(gameId)
-  } else {
-    gamesId = [gameId]
-  }
-  set(gamesRef, gamesId)
+  set(gameRef, true)
 }
 
-export const removeFavoriteGameId = async (gameId: number): Promise<void> => {
+export const countUserFavorites = async () => {
+  const gamesDb = await getGamesDb()
+  let count = 0
+  if (gamesDb) {
+    gamesDb.forEach((game)=> {
+      if (game.favorite) count++
+    })
+  }
+  return count
+}
+
+export const removeGameFromFavorites = async (gameId: number): Promise<void> => {
   const user = await getCurrentUser()
   if (!user) return
-
   const db = useDatabase()
 
-  const gamesRef = ref(db, `users/${user.uid}/favorite_games`)
+  const gameRef = ref(db, `users/${user.uid}/games/${gameId}/favorite`)
 
-  const favoriteGamesId = await getFavoriteGamesId()
-
-  if (favoriteGamesId) {
-    const index = favoriteGamesId.indexOf(gameId)
-    if (index === -1) return
-    favoriteGamesId.splice(index, 1)
-    set(gamesRef, favoriteGamesId)
-  }
+  set(gameRef, false)
 }
 
 const getGamesPromise = (

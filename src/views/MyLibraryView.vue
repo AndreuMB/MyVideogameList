@@ -21,16 +21,12 @@ onAuthStateChanged(auth, async (user) => {
 
 const loadGames = async () => {
   isLoading.value = true
-  // gamesDb.value = await getUserGamesDb(uid)
-  // const gamesLibrary = await getGamesDb()
   const gamesUser = await getGamesDb()
 
   if (gamesUser) {
     const gamesInLibrary = gamesUser.filter((game) => game.isInLibrary)
-    console.log({ gamesInLibrary })
-
     gamesDb.value = gamesInLibrary
-    games.value = await getGamesDbDetails(gamesDb.value)
+    games.value = await getGamesDbDetails(gamesInLibrary)
   }
 
   isLoading.value = false
@@ -47,11 +43,7 @@ const loadGames = async () => {
   >
     <GameCard
       :game="game"
-      :gameDb="
-        gamesDb && gamesDb.filter((gamedb) => gamedb.id === game.id)[0]
-          ? gamesDb.filter((gamedb) => gamedb.id === game.id)[0]
-          : null
-      "
+      :gamesDb="gamesDb"
       :is-logged-in="true"
       v-for="game in games"
       :key="game.id"

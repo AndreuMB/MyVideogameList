@@ -1,33 +1,43 @@
 <script setup lang="ts">
-import { addFavoriteGameId, getFavoriteGamesId, removeFavoriteGameId } from '@/utils/utils'
-import { onMounted, ref, type Ref } from 'vue'
+import { addGameToFavorites, countUserFavorites, removeGameFromFavorites } from '@/utils/utils'
+import { onMounted, ref } from 'vue'
 import { getCurrentUser } from 'vuefire'
 import { useToast } from 'vue-toast-notification'
+import type { GameDb } from '@/interfaces/GameDb';
 
 const props = defineProps<{
   gameId: number
+  gameDb: GameDb | null
 }>()
 
 const isOnFavorites = ref(false)
-const favGames: Ref<number[] | null> = ref(null)
+// const favGames: Ref<number[] | null> = ref(null)
 const toast = useToast()
 
 onMounted(async () => {
-  favGames.value = await getFavoriteGamesId()
+  // favGames.value = await getFavoriteGamesId()
+  // if (favGames.value) isOnFavorites.value = favGames.value.includes(props.gameId)
 
-  if (favGames.value) isOnFavorites.value = favGames.value.includes(props.gameId)
+  if (props.gameDb) {
+    isOnFavorites.value = !!props.gameDb.favorite
+  }
 })
 
 let timer = 0
+let inProgress = true
 const toogleFavorite = async () => {
   const user = await getCurrentUser()
   if (user) {
-    if (!isOnFavorites.value && Array.isArray(favGames.value) && favGames.value.length >= 3) {
+    // add fav
+    let favoritesCount = await countUserFavorites()
+    if (inProgress) favoritesCount++
+    if (!isOnFavorites.value && favoritesCount >= 3) {
       toast.error("You can't have more than 3 favorite games")
       return
     }
 
     isOnFavorites.value = !isOnFavorites.value
+    inProgress=true
 
     // debounce
     if (timer) {
@@ -36,11 +46,11 @@ const toogleFavorite = async () => {
 
     timer = setTimeout(async () => {
       if (isOnFavorites.value) {
-        await addFavoriteGameId(props.gameId)
+        await addGameToFavorites(props.gameId)
       } else {
-        await removeFavoriteGameId(props.gameId)
+        await removeGameFromFavorites(props.gameId)
       }
-      favGames.value = await getFavoriteGamesId()
+      inProgress = false
     }, 1000)
   }
 }

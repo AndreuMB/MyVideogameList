@@ -52,7 +52,7 @@ const searchGames = async () => {
   >
     <LoadingSpinner v-if="loading" />
     <GameCard
-      :gameDb="gamesDb ? gamesDb[game.id] : null"
+      :gamesDb="gamesDb"
       :game="game"
       :is-logged-in="isLoggedIn"
       v-for="game in games"

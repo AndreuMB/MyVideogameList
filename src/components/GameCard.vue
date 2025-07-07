@@ -9,17 +9,19 @@ import type { GameDb } from '@/interfaces/GameDb'
 const props = defineProps<{
   game: Game
   isLoggedIn: boolean
-  gameDb: GameDb | null
+  gamesDb: GameDb[] | null
   elipsis?: boolean
 }>()
 
 const isInLibrary: Ref<boolean> = ref(false)
+const gameDb: Ref<GameDb | null> = ref(null)
 
 const auth = getAuth()
 
 onMounted(() => {
-  if (props.gameDb) {
-    isInLibrary.value = props.gameDb.isInLibrary
+  if (props.gamesDb) {
+    gameDb.value = props.gamesDb.find(gamedb=>gamedb.id == props.game.id) || null
+    if (gameDb.value) isInLibrary.value = gameDb.value.isInLibrary
   }
 })
 
@@ -48,7 +50,7 @@ const toogleBookmark = (gameId: number, add: boolean) => {
 
 <template>
   <div class="background-secondary rounded-2xl grid grid-cols-1 relative">
-    <FavToggle v-if="isLoggedIn && isInLibrary" class="absolute top-2 right-2" :gameId="game.id" />
+    <FavToggle v-if="isLoggedIn && isInLibrary" class="absolute top-2 right-2" :game-id="game.id" :game-db="gameDb" />
     <img :src="game.image.medium_url" alt="Tall" class="rounded-t-2xl h-100 w-full object-cover" />
     <div class="flex justify-between p-3 items-center space-x-3">
       <RouterLink
