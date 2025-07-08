@@ -115,7 +115,7 @@ export const getGamesDb = async (): Promise<GameDb[] | null> => {
   const db = useDatabase()
 
   const gamesRef = ref(db, `users/${user.uid}/games`)
-  const gamesId:GameDb[] | null  = (await get(gamesRef)).val()
+  const gamesId: GameDb[] | null = (await get(gamesRef)).val()
   if (gamesId) return Object.values(gamesId)
   return null
 }
@@ -194,7 +194,7 @@ export const countUserFavorites = async () => {
   const gamesDb = await getGamesDb()
   let count = 0
   if (gamesDb) {
-    gamesDb.forEach((game)=> {
+    gamesDb.forEach((game) => {
       if (game.favorite === true) count++
     })
   }
@@ -268,7 +268,7 @@ export const changeGameState = async (gameId: number, gameStateId: number): Prom
   if (!user) return
   const db = useDatabase()
 
-  const gameRef = ref(db, `users/${user.uid}/games/${gameId}/gameState/`)
+  const gameRef = ref(db, `users/${user.uid}/games/${gameId}/state/`)
 
   set(gameRef, gameStateId)
 }
@@ -278,7 +278,7 @@ export const getGameState = async (gameId: number): Promise<number> => {
   if (!user) return 0
   const db = useDatabase()
 
-  const gameRef = ref(db, `users/${user.uid}/games/${gameId}/gameState/`)
+  const gameRef = ref(db, `users/${user.uid}/games/${gameId}/state/`)
 
   const gameState = await get(gameRef)
   return gameState.val()

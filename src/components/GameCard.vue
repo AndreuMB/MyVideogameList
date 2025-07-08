@@ -15,14 +15,19 @@ const props = defineProps<{
 }>()
 
 const isInLibrary: Ref<boolean> = ref(false)
+const isCompleted: Ref<boolean> = ref(false)
 const gameDb: Ref<GameDb | null> = ref(null)
 
 const auth = getAuth()
 
 onMounted(() => {
   if (props.gamesDb) {
-    gameDb.value = props.gamesDb.find(gamedb=>gamedb.id == props.game.id) || null
-    if (gameDb.value) isInLibrary.value = gameDb.value.isInLibrary
+    gameDb.value = props.gamesDb.find((gamedb) => gamedb.id == props.game.id) || null
+    if (gameDb.value) {
+      isInLibrary.value = gameDb.value.isInLibrary
+      isCompleted.value = gameDb.value.state == 2
+      console.log(gameDb.value.state)
+    }
   }
 })
 
@@ -51,10 +56,16 @@ const toogleBookmark = (gameId: number, add: boolean) => {
 
 <template>
   <div class="background-secondary rounded-2xl grid grid-cols-1 relative">
-
     <div class="absolute flex justify-between w-full p-2">
-      <DropdownGameState :game-id="game.id" />
-      <FavToggle v-if="isLoggedIn && isInLibrary" :game-id="game.id" :game-db="gameDb" />
+      <DropdownGameState
+        :game-id="game.id"
+        @state-change="(stateId: number) => (isCompleted = stateId == 2)"
+      />
+      <FavToggle
+        v-if="isLoggedIn && isInLibrary && isCompleted"
+        :game-id="game.id"
+        :game-db="gameDb"
+      />
     </div>
     <img :src="game.image.medium_url" alt="Tall" class="rounded-t-2xl h-100 w-full object-cover" />
 
