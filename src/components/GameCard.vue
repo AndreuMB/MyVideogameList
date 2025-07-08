@@ -57,6 +57,7 @@ const toogleBookmark = (gameId: number, add: boolean) => {
   <div class="background-secondary rounded-2xl grid grid-cols-1 relative">
     <div class="absolute flex justify-between w-full p-2">
       <DropdownGameState
+        v-if="isLoggedIn && isInLibrary"
         :game-id="game.id"
         @state-change="(stateId: number) => (isCompleted = stateId == 2)"
       />

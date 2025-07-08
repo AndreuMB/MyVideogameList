@@ -12,8 +12,6 @@ const descriptionHidden = ref(true)
 const description = useTemplateRef('description')
 const descriptionComplete = document.createElement('div')
 
-
-
 onMounted(async () => {
   isLoading.value = false
   const gameId = Number.parseInt(route.params.gameId.toString())
@@ -22,34 +20,39 @@ onMounted(async () => {
 
   await nextTick()
 
+  if (!game.value) return
+
   let gameDescription = game.value.description
   gameDescription = gameDescription.replace('<h2>Overview</h2>', '')
   // gameDescription = gameDescription.slice(25, -1); not work cut when still html string
-  game.value.description = gameDescription
+  // game.value.description = gameDescription
 
   if (description.value) {
+    descriptionComplete.innerHTML = ''
     descriptionComplete.innerHTML = gameDescription
+
     descriptionComplete.querySelectorAll('figure').forEach((figure) => {
       figure.remove()
-    });
+    })
 
-    if (descriptionComplete.firstChild) description.value.append(descriptionComplete.firstChild)
+    if (descriptionComplete.firstChild)
+      description.value.append(descriptionComplete.firstChild.cloneNode(true))
   }
-
 })
 
-const toogleHidden = ()=> {
+const toogleHidden = () => {
   descriptionHidden.value = !descriptionHidden.value
-  if (description.value) {
-    description.value.innerHTML=''
-      if (descriptionHidden.value) {
 
-      if (descriptionComplete.firstChild) description.value.append(descriptionComplete.firstChild)
-      } else {
-        description.value.append(descriptionComplete)
-      }
+  if (description.value) {
+    description.value.innerHTML = ''
+    if (descriptionHidden.value) {
+      if (descriptionComplete.firstChild)
+        description.value.append(descriptionComplete.firstChild.cloneNode(true))
+    } else {
+      description.value.append(descriptionComplete.cloneNode(true))
     }
   }
+}
 </script>
 
 <template>
@@ -69,13 +72,10 @@ const toogleHidden = ()=> {
       </div>
       <div class="w-3/4">
         <h2 class="text-2xl text-terciary">DESCRIPTION</h2>
-        <div
-          v-if="game.description"
-          :class="$style.description"
-        >
+        <div v-if="game.description" :class="$style.description">
           <div ref="description" class="description"></div>
-          <span @click="toogleHidden" class="text-terciary hover:text-terciary-soft cursor-pointer" >
-            {{ descriptionHidden ? "Show more" : "Show less" }}
+          <span @click="toogleHidden" class="text-terciary hover:text-terciary-soft cursor-pointer">
+            {{ descriptionHidden ? 'Show more' : 'Show less' }}
           </span>
         </div>
         <h2 v-else class="text-2xl text-terciary">NO DESCRIPTION AVAILABLE :(</h2>
@@ -85,7 +85,6 @@ const toogleHidden = ()=> {
 </template>
 
 <style module>
-
 .description {
   h2 {
     font-size: 20px;
@@ -97,7 +96,9 @@ table {
   margin: 20px;
 }
 
-table, td, th {
+table,
+td,
+th {
   border: 1px solid #ddd;
   text-align: left;
 }
@@ -107,8 +108,8 @@ table {
   width: 100%;
 }
 
-th, td {
+th,
+td {
   padding: 15px;
 }
-
 </style>

@@ -118,7 +118,7 @@ export const getGamesFromIds = async (gamesId: number[]): Promise<Game[]> => {
 }
 
 export const getGamesDb = async (
-  limit: number = 12,
+  limit: number = 99,
   offset: number = 0,
 ): Promise<GameDb[] | null> => {
   const user = await getCurrentUser()
@@ -268,11 +268,11 @@ export const getGamesOrderByRelease = async (
 export const getGameById = async (
   gameId: number,
   fieldList: string = 'id,name,image',
-): Promise<Game | undefined> => {
+): Promise<Game | null> => {
   const filter = `id:${gameId}`
   const games = await getGamesPromise(fieldList, filter)
   if (games) return games[0]
-  return undefined
+  return null
 }
 
 export const searchGamesByName = async (gameName: string) => {
