@@ -26,7 +26,6 @@ onMounted(() => {
     if (gameDb.value) {
       isInLibrary.value = gameDb.value.isInLibrary
       isCompleted.value = gameDb.value.state == 2
-      console.log(gameDb.value.state)
     }
   }
 })

@@ -1,6 +1,15 @@
 import type { GameDb } from '@/interfaces/GameDb'
 import type { Game, GiantbombResponse } from '@/interfaces/GiantbombResponse'
-import { DataSnapshot, get, ref, set } from 'firebase/database'
+import {
+  DataSnapshot,
+  get,
+  query,
+  ref,
+  set,
+  orderByKey,
+  limitToFirst,
+  startAfter,
+} from 'firebase/database'
 import jsonp from 'jsonp'
 import { getCurrentUser, useDatabase } from 'vuefire'
 
@@ -108,15 +117,22 @@ export const getGamesFromIds = async (gamesId: number[]): Promise<Game[]> => {
   return gamesData
 }
 
-export const getGamesDb = async (): Promise<GameDb[] | null> => {
+export const getGamesDb = async (
+  limit: number = 12,
+  offset: number = 0,
+): Promise<GameDb[] | null> => {
   const user = await getCurrentUser()
   if (!user) return []
 
   const db = useDatabase()
 
   const gamesRef = ref(db, `users/${user.uid}/games`)
-  const gamesId: GameDb[] | null = (await get(gamesRef)).val()
+  const q = query(gamesRef, orderByKey(), startAfter(offset.toString()), limitToFirst(limit))
+  const gamesDS = await get(q)
+  const gamesId: GameDb[] | null = gamesDS.val()
+
   if (gamesId) return Object.values(gamesId)
+
   return null
 }
 
@@ -216,6 +232,7 @@ const getGamesPromise = (
   filter?: string,
   sort?: string,
   limit?: string,
+  offset?: string,
 ): Promise<Game[] | undefined> => {
   const apikey = import.meta.env.VITE_GIANT_BOMB_KEY
   const jsonpParam = 'format=jsonp&json_callback=none'
@@ -224,7 +241,7 @@ const getGamesPromise = (
     jsonp(
       'https://www.giantbomb.com/api/games/?',
       {
-        param: `api_key=${apikey}&field_list=${fieldList}&sort=${sort}&filter=${filter}&limit=${limit}&${jsonpParam}`,
+        param: `api_key=${apikey}&field_list=${fieldList}&sort=${sort}&filter=${filter}&limit=${limit}&offset=${offset}&${jsonpParam}`,
       },
       (err: Error | null, data: GiantbombResponse<Game[]>) => {
         if (err) {
@@ -237,12 +254,15 @@ const getGamesPromise = (
   })
 }
 
-export const getGamesOrderByRelease = async (): Promise<Game[] | undefined> => {
+export const getGamesOrderByRelease = async (
+  results: string,
+  offset?: string,
+): Promise<Game[] | undefined> => {
   const fieldList = 'id,name,image'
   const filter = `original_release_date:2000|${new Date().toISOString()}`
   const sort = 'original_release_date:desc'
-  const limit = '12'
-  return await getGamesPromise(fieldList, filter, sort, limit)
+  const limit = results
+  return await getGamesPromise(fieldList, filter, sort, limit, offset)
 }
 
 export const getGameById = async (

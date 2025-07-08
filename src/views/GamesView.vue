@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import GameCard from '@/components/GameCard.vue'
+import InfiniteScroll from '@/components/InfiniteScroll.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import type { GameDb } from '@/interfaces/GameDb'
 import type { Game } from '@/interfaces/GiantbombResponse'
@@ -10,8 +11,11 @@ import { useRoute } from 'vue-router'
 
 const games: Ref<Game[] | undefined> = ref([])
 const route = useRoute()
-const loading: Ref<boolean> = ref(false)
+const isLoading: Ref<boolean> = ref(false)
+const loadingScroll: Ref<boolean> = ref(false)
 const gamesDb: Ref<GameDb[] | null> = ref(null)
+const results = 12
+let page = 0
 
 const auth = getAuth()
 const isLoggedIn = ref(false)
@@ -33,31 +37,48 @@ watch(route, async () => {
 })
 
 const searchGames = async () => {
-  loading.value = true
+  isLoading.value = true
   games.value = []
 
   if (route.params.gameName) {
     games.value = await searchGamesByName(route.params.gameName.toString())
   } else {
-    games.value = await getGamesOrderByRelease()
+    games.value = await getGamesOrderByRelease(results.toString(), (page * results).toString())
   }
-  loading.value = false
+  isLoading.value = false
+}
+
+const loadMoreGames = async () => {
+  if (!games.value || loadingScroll.value) return
+  loadingScroll.value = true
+  page++
+  const newGames = await getGamesOrderByRelease(results.toString(), (page * results).toString())
+  if (newGames) {
+    games.value = games.value.concat(newGames)
+    loadingScroll.value = false
+  }
 }
 </script>
 
 <template>
   <h1 class="text-4xl mb-10">GAMES</h1>
-  <div
-    class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 xl:gap-x-8"
-  >
-    <LoadingSpinner v-if="loading" />
+  <InfiniteScroll v-if="games" @scroll-end="loadMoreGames">
+    <LoadingSpinner v-if="isLoading" />
     <GameCard
+      v-for="game in games"
       :gamesDb="gamesDb"
       :game="game"
       :is-logged-in="isLoggedIn"
-      v-for="game in games"
       :key="game.id"
     />
+    <LoadingSpinner v-if="loadingScroll" />
+  </InfiniteScroll>
+  <div v-if="(!games || games.length <= 0) && !isLoading" class="flex items-center text-6xl">
+    <img src="/src/assets/book.png" alt="book" />
+    <p>
+      NO GAMES IN YOUR LIBRARY, ADD THEM
+      <RouterLink to="/games" class="text-terciary hover:text-terciary-soft">HERE</RouterLink>
+    </p>
   </div>
 </template>
 
