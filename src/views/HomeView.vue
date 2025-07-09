@@ -10,6 +10,8 @@ import { useRouter } from 'vue-router'
 
 const games: Ref<Game[]> = ref([])
 const loading: Ref<boolean> = ref(true)
+const results = 12
+const resultsView = 5
 
 const router = useRouter()
 
@@ -43,7 +45,8 @@ const responsiveOptions = ref([
 
 onMounted(async () => {
   loading.value = true
-  games.value = await getGamesOrderByRelease()
+  const gamesCarousel = await getGamesOrderByRelease(results.toString())
+  if (gamesCarousel) games.value = gamesCarousel
   loading.value = false
 })
 </script>
@@ -56,14 +59,14 @@ onMounted(async () => {
       <Carousel
         v-else
         :value="games"
-        :numVisible="5"
+        :numVisible="resultsView"
         :numScroll="1"
         :responsiveOptions="responsiveOptions"
         circular
         :autoplayInterval="3000"
       >
         <template #item="game">
-          <GameCard class="m-5" :game="game.data" :isLoggedIn="false" :elipsis="true" />
+          <GameCard :gamesDb="null" class="m-5" :game="game.data" :isLoggedIn="false" :elipsis="true" />
         </template>
       </Carousel>
     </div>
