@@ -36,11 +36,10 @@ const handleSignOut = () => {
 
 <template>
   <header class="flex justify-between mb-10 bg-green-200 rounded-2xl p-4">
-    <div class="flex gap-4 items-center">
+    <RouterLink class="flex gap-4 items-center" to="/home">
       <img alt="web logo" src="@/assets/pixel-heart.webp" width="27" height="27" />
-      <!-- <i class="pi pi-heart-fill text-2xl webIcon"></i> -->
       <p class="text-black text-xl">MyVideogameList</p>
-    </div>
+    </RouterLink>
 
     <div class="wrapper uppercase">
       <nav class="flex gap-2 menu">
