@@ -43,7 +43,10 @@ const searchGames = async () => {
   if (route.params.gameName) {
     games.value = await searchGamesByName(route.params.gameName.toString())
   } else {
-    games.value = await getGamesOrderByRelease(results.toString(), (page * results).toString())
+    games.value = await getGamesOrderByRelease(
+      results.toString(),
+      (page * (results + 1)).toString(),
+    )
   }
   isLoading.value = false
 }
@@ -52,7 +55,10 @@ const loadMoreGames = async () => {
   if (!games.value || loadingScroll.value) return
   loadingScroll.value = true
   page++
-  const newGames = await getGamesOrderByRelease(results.toString(), (page * results).toString())
+  const newGames = await getGamesOrderByRelease(
+    results.toString(),
+    (page * (results + 1)).toString(),
+  )
   if (newGames) {
     games.value = games.value.concat(newGames)
     loadingScroll.value = false

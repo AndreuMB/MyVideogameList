@@ -23,6 +23,7 @@ onMounted(async () => {
   if (!game.value) return
 
   let gameDescription = game.value.description
+  if (!gameDescription) return
   gameDescription = gameDescription.replace('<h2>Overview</h2>', '')
   // gameDescription = gameDescription.slice(25, -1); not work cut when still html string
   // game.value.description = gameDescription

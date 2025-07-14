@@ -15,7 +15,7 @@ export interface Game {
   date_added: string
   date_last_updated: string
   deck: string
-  description: string
+  description?: string
   expected_release_day: number
   expected_release_month: number
   expected_release_quarter: string

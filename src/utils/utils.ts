@@ -178,24 +178,6 @@ export const removeGameFromLibrary = async (gameId: number) => {
   set(gamesRef, false)
 }
 
-// export const addFavoriteGameId = async (gameId: number): Promise<void> => {
-//   const user = await getCurrentUser()
-//   if (!user) return
-
-//   const db = useDatabase()
-
-//   const gamesRef = ref(db, `users/${user.uid}/favorite_games`)
-//   let gamesId = await getFavoriteGamesId()
-//   if (Array.isArray(gamesId)) {
-//     if (gamesId.indexOf(gameId) >= 0) return
-
-//     gamesId.push(gameId)
-//   } else {
-//     gamesId = [gameId]
-//   }
-//   set(gamesRef, gamesId)
-
-// }
 export const addGameToFavorites = async (gameId: number): Promise<void> => {
   const user = await getCurrentUser()
   if (!user) return
@@ -262,7 +244,8 @@ export const getGamesOrderByRelease = async (
   const filter = `original_release_date:2000|${new Date().toISOString()}`
   const sort = 'original_release_date:desc'
   const limit = results
-  return await getGamesPromise(fieldList, filter, sort, limit, offset)
+  const games = await getGamesPromise(fieldList, filter, sort, limit, offset)
+  return games
 }
 
 export const getGameById = async (
