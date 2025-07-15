@@ -5,14 +5,14 @@ import GameCard from '@/components/GameCard.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { getGamesDb, getGamesDbDetails } from '@/utils/utils'
-import type { GameDb } from '@/interfaces/GameDb'
+import type { UserGameDb } from '@/interfaces/UserGameDb'
 import InfiniteScroll from '@/components/InfiniteScroll.vue'
 
 const games: Ref<Game[]> = ref([])
 
 const auth = getAuth()
 const isLoading = ref(true)
-const gamesDb: Ref<GameDb[] | null> = ref(null)
+const gamesDb: Ref<UserGameDb[] | null> = ref(null)
 const loadingScroll: Ref<boolean> = ref(false)
 const results: number = 12
 

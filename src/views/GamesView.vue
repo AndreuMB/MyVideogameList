@@ -2,7 +2,7 @@
 import GameCard from '@/components/GameCard.vue'
 import InfiniteScroll from '@/components/InfiniteScroll.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
-import type { GameDb } from '@/interfaces/GameDb'
+import type { UserGameDb } from '@/interfaces/UserGameDb'
 import type { Game } from '@/interfaces/GiantbombResponse'
 import { getGamesDb, getGamesOrderByRelease, searchGamesByName } from '@/utils/utils'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
@@ -13,7 +13,7 @@ const games: Ref<Game[] | undefined> = ref([])
 const route = useRoute()
 const isLoading: Ref<boolean> = ref(false)
 const loadingScroll: Ref<boolean> = ref(false)
-const gamesDb: Ref<GameDb[] | null> = ref(null)
+const gamesDb: Ref<UserGameDb[] | null> = ref(null)
 const results = 12
 let page = 0
 

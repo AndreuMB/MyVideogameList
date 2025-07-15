@@ -3,11 +3,11 @@ import { addGameToFavorites, countUserFavorites, removeGameFromFavorites } from 
 import { onMounted, ref } from 'vue'
 import { getCurrentUser } from 'vuefire'
 import { useToast } from 'vue-toast-notification'
-import type { GameDb } from '@/interfaces/GameDb';
+import type { UserGameDb } from '@/interfaces/UserGameDb'
 
 const props = defineProps<{
   gameId: number
-  gameDb: GameDb | null
+  gameDb: UserGameDb | null
 }>()
 
 const isOnFavorites = ref(false)
@@ -37,7 +37,7 @@ const toogleFavorite = async () => {
     }
 
     isOnFavorites.value = !isOnFavorites.value
-    inProgress=true
+    inProgress = true
 
     // debounce
     if (timer) {

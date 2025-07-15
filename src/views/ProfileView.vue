@@ -3,7 +3,7 @@
 import GameCard from '@/components/GameCard.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import ModalComponent from '@/components/ModalComponent.vue'
-import type { GameDb } from '@/interfaces/GameDb'
+import type { UserGameDb } from '@/interfaces/UserGameDb'
 import type { Game } from '@/interfaces/GiantbombResponse'
 import type { User } from '@/interfaces/User'
 import {
@@ -24,8 +24,7 @@ const isEditing = ref(false)
 const isLoading = ref(true)
 const showModal = ref(false)
 const userId = ref('')
-const gamesDb: Ref<GameDb[] | null> = ref(null)
-
+const gamesDb: Ref<UserGameDb[] | null> = ref(null)
 
 const defaultProfilePicture = '/src/assets/profile.png'
 
@@ -148,7 +147,13 @@ const setDefaultPfP = () => {
         v-else
         class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 xl:gap-x-8"
       >
-        <GameCard :game="game" :games-db="gamesDb" :is-logged-in="true" v-for="game in favGames" :key="game.id" />
+        <GameCard
+          :game="game"
+          :games-db="gamesDb"
+          :is-logged-in="true"
+          v-for="game in favGames"
+          :key="game.id"
+        />
       </div>
     </div>
   </div>

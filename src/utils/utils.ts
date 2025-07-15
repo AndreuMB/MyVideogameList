@@ -1,4 +1,4 @@
-import type { GameDb } from '@/interfaces/GameDb'
+import type { UserGameDb } from '@/interfaces/UserGameDb'
 import type { Game, GiantbombResponse } from '@/interfaces/GiantbombResponse'
 import {
   DataSnapshot,
@@ -12,6 +12,7 @@ import {
 } from 'firebase/database'
 import jsonp from 'jsonp'
 import { getCurrentUser, useDatabase } from 'vuefire'
+import type { GameDb } from '@/interfaces/GameDb'
 
 export const exampleGame: Game = {
   aliases: 'GTA V, Grand Theft Auto 5',
@@ -120,7 +121,7 @@ export const getGamesFromIds = async (gamesId: number[]): Promise<Game[]> => {
 export const getGamesDb = async (
   limit: number = 99,
   offset: number = 0,
-): Promise<GameDb[] | null> => {
+): Promise<UserGameDb[] | null> => {
   const user = await getCurrentUser()
   if (!user) return []
 
@@ -129,14 +130,14 @@ export const getGamesDb = async (
   const gamesRef = ref(db, `users/${user.uid}/games`)
   const q = query(gamesRef, orderByKey(), startAfter(offset.toString()), limitToFirst(limit))
   const gamesDS = await get(q)
-  const gamesId: GameDb[] | null = gamesDS.val()
+  const gamesId: UserGameDb[] | null = gamesDS.val()
 
   if (gamesId) return Object.values(gamesId)
 
   return null
 }
 
-export const getGamesDbDetails = async (gamesDb: GameDb[]): Promise<Game[]> => {
+export const getGamesDbDetails = async (gamesDb: UserGameDb[]): Promise<Game[]> => {
   const gamesData: Game[] = []
 
   for await (const gameDb of gamesDb) {
@@ -282,6 +283,53 @@ export const getGameState = async (gameId: number): Promise<number> => {
   const db = useDatabase()
 
   const gameRef = ref(db, `users/${user.uid}/games/${gameId}/state/`)
+
+  const gameState = await get(gameRef)
+  return gameState.val()
+}
+
+export const changeGameRating = async (gameId: number, rating: number): Promise<void> => {
+  const user = await getCurrentUser()
+  if (!user) return
+  const db = useDatabase()
+
+  const gameUserRef = ref(db, `users/${user.uid}/games/${gameId}/rating/`)
+  const userRating = await get(gameUserRef)
+  set(gameUserRef, rating)
+
+  const gameDb = await getGameDb(gameId)
+  const gameRef = ref(db, `games/${gameId}/`)
+  // have valoration
+  if (gameDb && gameDb.rating && gameDb.ratingContributors) {
+    // user already rate
+    if (userRating.val()) {
+      gameDb.rating -= userRating.val()
+      gameDb.rating += rating
+    } else {
+      gameDb.rating += rating
+      gameDb.ratingContributors += 1
+    }
+    set(gameRef, gameDb)
+  } else {
+    set(gameRef, { rating, ratingContributors: 1 })
+  }
+}
+
+// export const getGameRating = async (gameId: number): Promise<number> => {
+//   const user = await getCurrentUser()
+//   if (!user) return 0
+//   const db = useDatabase()
+//   const gameRef = ref(db, `users/${user.uid}/games/${gameId}/rating/`)
+
+//   const gameState = await get(gameRef)
+//   return gameState.val()
+// }
+
+export const getGameDb = async (gameId: number): Promise<GameDb | null> => {
+  const user = await getCurrentUser()
+  if (!user) return null
+  const db = useDatabase()
+  const gameRef = ref(db, `games/${gameId}`)
 
   const gameState = await get(gameRef)
   return gameState.val()

@@ -4,19 +4,19 @@ import type { Game } from '@/interfaces/GiantbombResponse'
 import { addGameToLibrary, removeGameFromLibrary } from '@/utils/utils'
 import { onMounted, ref, type Ref } from 'vue'
 import FavToggle from './FavToggle.vue'
-import type { GameDb } from '@/interfaces/GameDb'
+import type { UserGameDb } from '@/interfaces/UserGameDb'
 import DropdownGameState from './DropdownGameState.vue'
 
 const props = defineProps<{
   game: Game
   isLoggedIn: boolean
-  gamesDb: GameDb[] | null
+  gamesDb: UserGameDb[] | null
   elipsis?: boolean
 }>()
 
 const isInLibrary: Ref<boolean> = ref(false)
 const isCompleted: Ref<boolean> = ref(false)
-const gameDb: Ref<GameDb | null> = ref(null)
+const gameDb: Ref<UserGameDb | null> = ref(null)
 
 const auth = getAuth()
 

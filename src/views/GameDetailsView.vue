@@ -3,19 +3,23 @@ import { nextTick, onMounted, ref, useTemplateRef, type Ref } from 'vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { useRoute } from 'vue-router'
 import type { Game } from '@/interfaces/GiantbombResponse'
-import { getGameById } from '@/utils/utils'
+import { getGameById, getGameDb } from '@/utils/utils'
+import GameRaiting from '@/components/GameRating.vue'
+import type { GameDb } from '@/interfaces/GameDb'
 
 const isLoading = ref(true)
 const route = useRoute()
 const game: Ref<Game | null> = ref(null)
+const gameDb: Ref<GameDb | null> = ref(null)
 const descriptionHidden = ref(true)
 const description = useTemplateRef('description')
 const descriptionComplete = document.createElement('div')
 
 onMounted(async () => {
-  isLoading.value = false
+  isLoading.value = true
   const gameId = Number.parseInt(route.params.gameId.toString())
   game.value = await getGameById(gameId, '')
+  gameDb.value = await getGameDb(gameId)
   isLoading.value = false
 
   await nextTick()
@@ -66,6 +70,13 @@ const toogleHidden = () => {
     <div class="flex gap-10">
       <div class="max-w-1/4">
         <img class="" :src="game.image.medium_url" alt="gameImg" />
+        <GameRaiting
+          :game-id="game.id"
+          :rating="gameDb?.rating || 0"
+          :game-db="gameDb"
+          @rating-change="async () => (gameDb = await getGameDb(game!.id))"
+          class="mt-1"
+        ></GameRaiting>
         <h2 class="text-2xl mt-5 text-terciary">PLATFORMS</h2>
         <p v-for="platform in game.platforms" :key="platform.id">
           {{ platform.name }}
