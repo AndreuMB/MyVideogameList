@@ -16,11 +16,14 @@ onMounted(() => {
 })
 
 const printRating = () => {
-  if (!stars.value || !props.gameDb) return
-  if (!props.gameDb.rating || !props.gameDb.ratingContributors) return
+  if (!stars.value) return
+  const starsArray = Array.from(stars.value.querySelectorAll('i'))
+  if (!props.gameDb || !props.gameDb.rating || !props.gameDb.ratingContributors) {
+    cleanStars(starsArray)
+    return
+  }
 
   const rating = props.gameDb.rating / props.gameDb.ratingContributors
-  const starsArray = Array.from(stars.value.querySelectorAll('i'))
   starsArray.forEach((star, i) => {
     if (i >= rating) {
       star.classList.remove('pi-star-fill')
@@ -35,6 +38,14 @@ const printRating = () => {
 const handleRating = async (i: number) => {
   await changeGameRating(props.gameId, i)
   emit('ratingChange')
+}
+
+const cleanStars = (starsArray: HTMLElement[]) => {
+  if (!stars.value) return
+  starsArray.forEach((star) => {
+      star.classList.remove('pi-star-fill')
+      star.classList.add('pi-star')
+  })
 }
 
 const handleRatingHover = (e: MouseEvent) => {

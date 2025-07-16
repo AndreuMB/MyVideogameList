@@ -88,7 +88,7 @@ const handleStateChange = async () => {
   <div v-else>
     <div class="mb-10">
       <div class="flex justify-between h-full">
-        <h1 class="text-4xl text-terciary">{{ game.name }}</h1>
+        <h1 class="text-4xl text-terciary font-pixel">{{ game.name }}</h1>
         <div v-if="isLoggedIn" class="flex gap-2 items-center">
           <BookmarkToggle :game-id="game.id" @state-change="handleStateChange" />
           <template v-if="userGameDb && userGameDb.isInLibrary">
@@ -103,6 +103,7 @@ const handleStateChange = async () => {
       <div class="max-w-1/4">
         <img class="" :src="game.image.medium_url" alt="gameImg" />
         <GameRaiting
+          v-if="userGameDb && userGameDb.isInLibrary && userGameDb.state == 2"
           :game-id="game.id"
           :rating="gameDb?.rating || 0"
           :game-db="gameDb"
