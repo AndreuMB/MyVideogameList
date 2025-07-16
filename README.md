@@ -1,22 +1,33 @@
 # MyVideogamesList
 
-This template should help get you started developing with Vue 3 in Vite.
-https://tailwindcss.com/
-https://vuefire.vuejs.org/guide/getting-started.html
-https://primevue.org/icons/
-https://primevue.org/carousel/
+Organize, track, and share your video game journey. Add your favorite games, track your progress, rate them, and discover new titles — all in one place.
 
-## Recommended IDE Setup
+Built with Vue, Tailwind CSS, and Firebase, this app offers a clean interface and easy interactions for a smooth user experience.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+---
 
-## Type Support for `.vue` Imports in TS
+## ✨ Features
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+- 🔍 **Search and Discover**: Find games through a dynamic search interface.
+- 📚 **Personal Game Library**: Add games to your collection.
+- ✅ **Progress Tracking**: Keep track of your play status and achievements.
+- ⭐ **Ratings & Reviews**: Rate games you've played and help others.
+- 📄 **Game Info**: View detailed descriptions, covers, and release data.
 
-## Customize configuration
+---
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## 🚀 Tech Stack
+
+### Frontend
+- [**Vue 3**](https://vuejs.org/) – Reactive frontend framework.
+- [**PrimeVue**](https://primevue.org/) – UI component library for Vue.
+- [**Tailwind CSS**](https://tailwindcss.com/) – CSS framework for responsive design.
+
+### Backend & Database
+- [**Firebase**](https://firebase.google.com/) – Authentication and realtime database.
+- [**VueFire**](https://vuefire.vuejs.org/guide/getting-started.html) – Official bindings for Firebase with Vue.
+
+---
 
 ## Project Setup
 
@@ -36,8 +47,7 @@ npm run dev
 npm run build
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+## 🙌 Acknowledgments
+Data sourced from GiantBomb API.
 
-```sh
-npm run lint
-```
+Inspired by MyAnimeList.
