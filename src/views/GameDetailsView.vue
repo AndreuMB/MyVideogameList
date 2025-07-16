@@ -3,23 +3,33 @@ import { nextTick, onMounted, ref, useTemplateRef, type Ref } from 'vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { useRoute } from 'vue-router'
 import type { Game } from '@/interfaces/GiantbombResponse'
-import { getGameById, getGameDb } from '@/utils/utils'
+import { getGameById, getGameDb, getUserGameDb } from '@/utils/utils'
 import GameRaiting from '@/components/GameRating.vue'
 import type { GameDb } from '@/interfaces/GameDb'
+import FavToggle from '@/components/FavToggle.vue'
+import type { UserGameDb } from '@/interfaces/UserGameDb'
+import DropdownGameState from '@/components/DropdownGameState.vue'
+import BookmarkToggle from '@/components/BookmarkToggle.vue'
+import { getCurrentUser } from 'vuefire'
 
 const isLoading = ref(true)
+const isLoggedIn = ref(false)
 const route = useRoute()
 const game: Ref<Game | null> = ref(null)
+const userGameDb: Ref<UserGameDb | null> = ref(null)
 const gameDb: Ref<GameDb | null> = ref(null)
 const descriptionHidden = ref(true)
 const description = useTemplateRef('description')
 const descriptionComplete = document.createElement('div')
+const gameId = Number.parseInt(route.params.gameId.toString())
 
 onMounted(async () => {
   isLoading.value = true
-  const gameId = Number.parseInt(route.params.gameId.toString())
+  const user = await getCurrentUser()
+  if (user) isLoggedIn.value = true
   game.value = await getGameById(gameId, '')
   gameDb.value = await getGameDb(gameId)
+  userGameDb.value = await getUserGameDb(gameId)
   isLoading.value = false
 
   await nextTick()
@@ -58,13 +68,35 @@ const toogleHidden = () => {
     }
   }
 }
+
+// const favValidation = ():boolean => {
+//   if (userGameDb.value) {
+//     if (!userGameDb.value.isInLibrary) return false
+//     if (userGameDb.value.state != 2) return false
+//     return true
+//   }
+//   return false
+// }
+
+const handleStateChange = async () => {
+  userGameDb.value = await getUserGameDb(gameId)
+}
 </script>
 
 <template>
   <LoadingSpinner v-if="isLoading || game == null" />
   <div v-else>
     <div class="mb-10">
-      <h1 class="text-4xl text-terciary">{{ game.name }}</h1>
+      <div class="flex justify-between h-full">
+        <h1 class="text-4xl text-terciary">{{ game.name }}</h1>
+        <div v-if="isLoggedIn" class="flex gap-2 items-center">
+          <BookmarkToggle :game-id="game.id" @state-change="handleStateChange" />
+          <template v-if="userGameDb && userGameDb.isInLibrary">
+            <DropdownGameState :game-id="game.id" @state-change="handleStateChange" />
+            <FavToggle v-if="userGameDb.state == 2" :game-id="game.id" :game-db="userGameDb" />
+          </template>
+        </div>
+      </div>
       <p class="text-2xl">{{ game.date_added.split(' ')[0] }}</p>
     </div>
     <div class="flex gap-10">

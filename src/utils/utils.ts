@@ -9,6 +9,7 @@ import {
   orderByKey,
   limitToFirst,
   startAfter,
+  update,
 } from 'firebase/database'
 import jsonp from 'jsonp'
 import { getCurrentUser, useDatabase } from 'vuefire'
@@ -166,7 +167,7 @@ export const addGameToLibrary = async (gameId: number) => {
 
   const gamesRef = ref(db, `users/${user.uid}/games/${gameId}`)
 
-  set(gamesRef, { id: gameId, isInLibrary: true })
+  update(gamesRef, { id: gameId, isInLibrary: true })
 }
 
 export const removeGameFromLibrary = async (gameId: number) => {
@@ -330,6 +331,16 @@ export const getGameDb = async (gameId: number): Promise<GameDb | null> => {
   if (!user) return null
   const db = useDatabase()
   const gameRef = ref(db, `games/${gameId}`)
+
+  const gameState = await get(gameRef)
+  return gameState.val()
+}
+
+export const getUserGameDb = async (gameId: number): Promise<UserGameDb | null> => {
+  const user = await getCurrentUser()
+  if (!user) return null
+  const db = useDatabase()
+  const gameRef = ref(db, `users/${user.uid}/games/${gameId}`)
 
   const gameState = await get(gameRef)
   return gameState.val()
