@@ -16,12 +16,12 @@ onAuthStateChanged(auth, async (user) => {
 
     let userdb = await getUser(user.uid)
 
-    if ((!userdb.val() || !userdb.val().username) && user.email) {
+    if ((!userdb || !userdb.username) && user.email) {
       setUsername(user.uid, user.email.split('@')[0])
     }
 
     userdb = await getUser(user.uid)
-    userDisplay.value = userdb.val().username
+    userDisplay.value = userdb.username
   } else {
     isLoggedIn.value = false
   }

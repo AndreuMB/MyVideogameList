@@ -35,7 +35,7 @@ onMounted(async () => {
   if (authUser) {
     const userdb = await getUser(authUser.uid)
     userId.value = authUser.uid
-    user.value = userdb.val()
+    user.value = userdb
   }
 
   const gamesUser = await getGamesDb()
@@ -65,7 +65,7 @@ const toogleEdit = () => {
 const updateProfilePicture = async () => {
   showModal.value = false
   const userdb = await getUser(userId.value)
-  user.value = userdb.val()
+  user.value = userdb
 }
 
 const setDefaultPfP = () => {

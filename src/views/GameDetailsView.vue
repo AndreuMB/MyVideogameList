@@ -11,6 +11,7 @@ import type { UserGameDb } from '@/interfaces/UserGameDb'
 import DropdownGameState from '@/components/DropdownGameState.vue'
 import BookmarkToggle from '@/components/BookmarkToggle.vue'
 import { getCurrentUser } from 'vuefire'
+import GameComments from '@/components/GameComments.vue'
 
 const isLoading = ref(true)
 const isLoggedIn = ref(false)
@@ -110,13 +111,13 @@ const handleStateChange = async () => {
           @rating-change="async () => (gameDb = await getGameDb(game!.id))"
           class="mt-1"
         ></GameRaiting>
-        <h2 class="text-2xl mt-5 text-terciary">PLATFORMS</h2>
+        <h2 class="text-2xl mt-5 text-terciary font-pixel">PLATFORMS</h2>
         <p v-for="platform in game.platforms" :key="platform.id">
           {{ platform.name }}
         </p>
       </div>
       <div class="w-3/4">
-        <h2 class="text-2xl text-terciary">DESCRIPTION</h2>
+        <h2 class="text-2xl text-terciary font-pixel">DESCRIPTION</h2>
         <div v-if="game.description" :class="$style.description">
           <div ref="description" class="description"></div>
           <span @click="toogleHidden" class="text-terciary hover:text-terciary-soft cursor-pointer">
@@ -125,6 +126,9 @@ const handleStateChange = async () => {
         </div>
         <h2 v-else class="text-2xl text-terciary">NO DESCRIPTION AVAILABLE :(</h2>
       </div>
+    </div>
+    <div class="mt-5">
+      <GameComments :game-id="gameId" />
     </div>
   </div>
 </template>

@@ -1,7 +1,6 @@
 import type { UserGameDb } from '@/interfaces/UserGameDb'
 import type { Game, GiantbombResponse } from '@/interfaces/GiantbombResponse'
 import {
-  DataSnapshot,
   get,
   query,
   ref,
@@ -10,10 +9,12 @@ import {
   limitToFirst,
   startAfter,
   update,
+  push,
 } from 'firebase/database'
 import jsonp from 'jsonp'
 import { getCurrentUser, useDatabase } from 'vuefire'
-import type { GameDb } from '@/interfaces/GameDb'
+import type { GameDb, GameDbComment } from '@/interfaces/GameDb'
+import type { User } from '@/interfaces/User'
 
 export const exampleGame: Game = {
   aliases: 'GTA V, Grand Theft Auto 5',
@@ -82,12 +83,12 @@ export const exampleGame: Game = {
   site_detail_url: 'https://www.giantbomb.com/games/3030-4664/',
 }
 
-export const getUser = async (userUid: string): Promise<DataSnapshot> => {
+export const getUser = async (userUid: string): Promise<User> => {
   const db = useDatabase()
 
   const userRef = ref(db, `users/${userUid}`)
   const user = await get(userRef)
-  return user
+  return user.val()
 }
 
 export const setUsername = async (userUid: string, username: string): Promise<void> => {
@@ -316,16 +317,6 @@ export const changeGameRating = async (gameId: number, rating: number): Promise<
   }
 }
 
-// export const getGameRating = async (gameId: number): Promise<number> => {
-//   const user = await getCurrentUser()
-//   if (!user) return 0
-//   const db = useDatabase()
-//   const gameRef = ref(db, `users/${user.uid}/games/${gameId}/rating/`)
-
-//   const gameState = await get(gameRef)
-//   return gameState.val()
-// }
-
 export const getGameDb = async (gameId: number): Promise<GameDb | null> => {
   const user = await getCurrentUser()
   if (!user) return null
@@ -344,4 +335,18 @@ export const getUserGameDb = async (gameId: number): Promise<UserGameDb | null> 
 
   const gameState = await get(gameRef)
   return gameState.val()
+}
+
+export const insertCommet = async (gameId: number, comment:string): Promise<void> => {
+  const user = await getCurrentUser()
+  if (!user) return
+  const date = new Date()
+  const gameDbComment: GameDbComment = {
+    usernameId: user.uid,
+    comment,
+    date: date.toLocaleDateString('es-ES')
+  }
+  const db = useDatabase()
+  const gameRef = ref(db, `/games/${gameId}/comments`)
+  push(gameRef, gameDbComment)
 }
