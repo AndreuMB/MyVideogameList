@@ -35,7 +35,7 @@ const handleSignOut = () => {
 </script>
 
 <template>
-  <header class="flex justify-between mb-10 bg-green-200 rounded-2xl p-4">
+  <header class="flex justify-between mb-10 bg-secondary rounded-2xl p-4">
     <RouterLink class="flex gap-4 items-center" to="/home">
       <img alt="web logo" src="@/assets/pixel-heart.webp" width="27" height="27" />
       <p class="text-black text-xl">MyVideogameList</p>
