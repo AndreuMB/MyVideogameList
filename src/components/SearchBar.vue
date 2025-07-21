@@ -7,7 +7,7 @@ const search_text = ref('')
 <template>
   <form class="ml-2" @submit.prevent="$router.push(`/games/${search_text}`)">
     <div class="relative">
-      <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+      <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-primary">
         <svg
           class="w-4 h-4"
           aria-hidden="true"
@@ -25,10 +25,8 @@ const search_text = ref('')
         </svg>
       </div>
       <input
-        type="search"
-        id="default-search"
-        class="block w-full p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-        placeholder=""
+        type="text"
+        class="block w-full p-2 ps-10 text-sm text-primary border-terciary-mute rounded-lg bg-terciary"
         required
         v-model="search_text"
       />

@@ -107,7 +107,7 @@ const setDefaultPfP = () => {
         v-model="user.username"
         required
       />
-      <h1 v-else class="text-6xl uppercase text-terciary">{{ user.username }}</h1>
+      <h1 v-else class="text-6xl uppercase text-terciary font-pixel">{{ user.username }}</h1>
       <button class="rounded" @click="toogleEdit">
         <i v-if="isEditing" class="pi pi-save text-2xl! px-3 py-2"></i>
         <i v-else class="pi pi-pen-to-square text-2xl! px-3 py-2"></i>
@@ -148,13 +148,13 @@ const setDefaultPfP = () => {
           {{ user.description }}
         </div>
         <div v-else>
-          <h2 class="text-4xl">NO DESCRIPTION</h2>
+          <h2 class="text-4xl font-pixel">NO DESCRIPTION</h2>
           <p class="text-2xl text-terciary">SO BORING 😴</p>
         </div>
       </div>
     </div>
     <div>
-      <h1 class="text-3xl uppercase mb-5 text-terciary">FAVORITE GAMES</h1>
+      <h1 class="text-3xl uppercase mb-5 text-terciary font-pixel">FAVORITE GAMES</h1>
       <div v-if="isLoading">
         <LoadingSpinner />
       </div>
