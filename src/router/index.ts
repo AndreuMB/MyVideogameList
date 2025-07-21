@@ -33,10 +33,9 @@ const router = createRouter({
       component: () => import('../views/GameDetailsView.vue'),
     },
     {
-      path: '/profile',
+      path: '/profile/:username',
       name: 'Profile',
-      component: () => import('../views/ProfileView.vue'),
-      meta: { isProtected: true },
+      component: () => import('../views/ProfileView.vue')
     },
     {
       path: '/auth',

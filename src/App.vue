@@ -8,7 +8,7 @@ import { getUser, setUsername } from './utils/utils'
 const isLoggedIn = ref(false)
 const auth = getAuth()
 const router = useRouter()
-const userDisplay = ref('')
+const username = ref('')
 // onMounted(() => {
 onAuthStateChanged(auth, async (user) => {
   if (user) {
@@ -21,7 +21,7 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     userdb = await getUser(user.uid)
-    userDisplay.value = userdb.username
+    username.value = userdb.username
   } else {
     isLoggedIn.value = false
   }
@@ -46,7 +46,7 @@ const handleSignOut = () => {
         <RouterLink to="/" v-if="isLoggedIn">My Library</RouterLink>
         <RouterLink to="/games">Games</RouterLink>
         <RouterLink to="/auth" v-if="!isLoggedIn">Sign In</RouterLink>
-        <RouterLink to="/profile" v-if="isLoggedIn">{{ userDisplay }}</RouterLink>
+        <RouterLink :to="`/profile/${username}`" v-if="isLoggedIn">{{ username }}</RouterLink>
         <a @click="handleSignOut" v-if="isLoggedIn" class="uppercase cursor-pointer">Sign Out</a>
         <SearchBar />
       </nav>

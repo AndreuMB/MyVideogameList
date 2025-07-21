@@ -91,6 +91,21 @@ export const getUser = async (userUid: string): Promise<User> => {
   return user.val()
 }
 
+export const userIdFromUsername = async (username: string): Promise<string | null> => {
+  const db = useDatabase()
+  const userRef = ref(db, `users/`)
+  const usersDS = await get(userRef)
+  const users =  usersDS.val()
+  const usersArray: string[] = Object.keys(users)
+
+  let foundUserId = null
+  usersArray.forEach((userId)=> {
+    if (users[userId].username === username) foundUserId = userId
+  })
+
+  return foundUserId || null
+}
+
 export const setUsername = async (userUid: string, username: string): Promise<void> => {
   const db = useDatabase()
   const userRef = ref(db, `users/${userUid}/username`)

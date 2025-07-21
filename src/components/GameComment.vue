@@ -17,19 +17,22 @@ onMounted(async ()=> {
    <div v-if="userDb" class="p-6 bg-secondary rounded-lg text-primary">
         <div class="flex justify-between items-center mb-2">
             <div class="flex items-center">
-                <p
-                  class="inline-flex items-center mr-3 font-semibold"><img
-                  class="mr-2 w-6 h-6 rounded-full"
-                  :src="userDb.picture"
-                  :alt="userDb.username"
+                <router-link
+                  :to="`/profile/${userDb.username}`"
+                  class="inline-flex items-center mr-3 font-semibold hover:text-terciary-mute"
                 >
+                  <img
+                    class="mr-2 w-6 h-6 rounded-full"
+                    :src="userDb.picture || '/src/assets/profile.png'"
+                    :alt="userDb.username"
+                  />
                   {{ userDb.username }}
-                </p>
+                </router-link>
                 <p>
                   <time pubdate :datetime="gameComment.date">{{ gameComment.date }}</time>
                 </p>
             </div>
         </div>
-        <p class="">{{ gameComment.comment }}</p>
+        <p>{{ gameComment.comment }}</p>
     </div>
 </template>

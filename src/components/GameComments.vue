@@ -23,13 +23,18 @@ const handleInsertComment = async () => {
 </script>
 
 <template>
-  <h1 class="text-2xl font-pixel text-terciary">COMMENTS</h1>
-  <p>Share your thoughts</p>
-  <div class="text-right">
-    <textarea v-model="comment" class="w-full bg-terciary-mute"></textarea>
-    <button class="font-medium rounded-lg p-2 px-4 text-primary" @click="handleInsertComment">Send</button>
+  <h1 class="text-2xl font-pixel text-terciary mb-2">COMMENTS</h1>
+  <div class="border-secondary border rounded p-2 mb-4">
+    <p class="mb-1">☁️ Share your thoughts ☁️</p>
+    <div class="flex gap-2">
+      <textarea v-model="comment" class="w-full bg-terciary-mute rounded"></textarea>
+      <button class="font-medium rounded-lg p-2 px-4 text-primary" @click="handleInsertComment">
+        <i class="pi pi-send"></i>
+      </button>
+    </div>
   </div>
-  <div v-if="gameDb && gameDb.comments" class="mt-4">
+
+  <div v-if="gameDb && gameDb.comments">
     <div v-for="comment in gameDb.comments" :key="comment.comment">
       <GameComment class="mb-2" :game-comment="comment" />
     </div>

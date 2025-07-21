@@ -7,36 +7,52 @@ import type { UserGameDb } from '@/interfaces/UserGameDb'
 import type { Game } from '@/interfaces/GiantbombResponse'
 import type { User } from '@/interfaces/User'
 import {
+  userIdFromUsername,
   getGamesDb,
   getGamesDbDetails,
-  // getFavoriteGamesId,
-  // getGamesFromIds,
   getUser,
   setDescription,
   setUsername,
 } from '@/utils/utils'
 import { onMounted, ref, type Ref } from 'vue'
-import { getCurrentUser } from 'vuefire'
+import { useRoute } from 'vue-router'
+import UserNotFound from '@/components/UserNotFound.vue'
 
 const user: Ref<User | null> = ref(null)
 const favGames: Ref<Game[] | null> = ref(null)
 const isEditing = ref(false)
 const isLoading = ref(true)
+const isLoadingUser = ref(true)
 const showModal = ref(false)
 const userId = ref('')
 const gamesDb: Ref<UserGameDb[] | null> = ref(null)
+const route = useRoute()
+const username = route.params.username.toString()
+
 
 const defaultProfilePicture = '/src/assets/profile.png'
 
 onMounted(async () => {
-  isLoading.value = true
-  const authUser = await getCurrentUser()
-
-  if (authUser) {
-    const userdb = await getUser(authUser.uid)
-    userId.value = authUser.uid
-    user.value = userdb
+  isLoadingUser.value = true
+  if (!username) {
+    isLoadingUser.value = false
+    return
   }
+
+  const checkUserId = await userIdFromUsername(username)
+
+  if (!checkUserId) {
+    isLoadingUser.value = false
+    return
+  }
+
+
+
+  const userdb = await getUser(checkUserId)
+  userId.value = checkUserId
+  user.value = userdb
+
+
 
   const gamesUser = await getGamesDb()
 
@@ -76,8 +92,11 @@ const setDefaultPfP = () => {
 </script>
 
 <template>
-  <div v-if="user === null">
+  <div v-if="user === null && isLoadingUser==true">
     <LoadingSpinner />
+  </div>
+  <div v-else-if="user === null">
+    <UserNotFound />
   </div>
   <div v-else>
     <div class="w-full flex justify-between items-center mb-5">
