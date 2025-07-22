@@ -95,11 +95,11 @@ export const userIdFromUsername = async (username: string): Promise<string | nul
   const db = useDatabase()
   const userRef = ref(db, `users/`)
   const usersDS = await get(userRef)
-  const users =  usersDS.val()
+  const users = usersDS.val()
   const usersArray: string[] = Object.keys(users)
 
   let foundUserId = null
-  usersArray.forEach((userId)=> {
+  usersArray.forEach((userId) => {
     if (users[userId].username === username) foundUserId = userId
   })
 
@@ -165,16 +165,19 @@ export const getGamesDbDetails = async (gamesDb: UserGameDb[]): Promise<Game[]> 
   return gamesData
 }
 
-// export const getFavoriteGamesId = async (): Promise<number[] | null> => {
-//   const user = await getCurrentUser()
-//   if (!user) return []
+export const getGamesDbDetailsv2 = async (gamesIds: number[]): Promise<Game[] | null> => {
+  const fieldList = 'id,name,image'
 
-//   const db = useDatabase()
+  console.log(gamesIds.toString().replace(/,/g, '|'))
 
-//   const gamesRef = ref(db, `users/${user.uid}/favorite_games`)
-//   const gamesId = (await get(gamesRef)).val()
-//   return gamesId
-// }
+  const filter = 'id:' + gamesIds.toString().replace(/,/g, '|')
+
+  const games = await getGamesPromise(fieldList, filter)
+
+  if (!games) return null
+
+  return games
+}
 
 export const addGameToLibrary = async (gameId: number) => {
   const user = await getCurrentUser()
@@ -352,14 +355,14 @@ export const getUserGameDb = async (gameId: number): Promise<UserGameDb | null> 
   return gameState.val()
 }
 
-export const insertCommet = async (gameId: number, comment:string): Promise<void> => {
+export const insertCommet = async (gameId: number, comment: string): Promise<void> => {
   const user = await getCurrentUser()
   if (!user) return
   const date = new Date()
   const gameDbComment: GameDbComment = {
     usernameId: user.uid,
     comment,
-    date: date.toLocaleDateString('es-ES')
+    date: date.toLocaleDateString('es-ES'),
   }
   const db = useDatabase()
   const gameRef = ref(db, `/games/${gameId}/comments`)

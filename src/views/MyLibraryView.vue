@@ -4,7 +4,7 @@ import { ref, type Ref } from 'vue'
 import GameCard from '@/components/GameCard.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { getGamesDb, getGamesDbDetails } from '@/utils/utils'
+import { getGamesDb, getGamesDbDetailsv2 } from '@/utils/utils'
 import type { UserGameDb } from '@/interfaces/UserGameDb'
 import InfiniteScroll from '@/components/InfiniteScroll.vue'
 
@@ -29,7 +29,11 @@ const loadGames = async () => {
   if (gamesUser) {
     const gamesInLibrary = gamesUser.filter((game) => game.isInLibrary)
     gamesDb.value = gamesInLibrary
-    games.value = await getGamesDbDetails(gamesInLibrary)
+
+    const gamesIdsInLibrary = gamesInLibrary.map((game) => game.id)
+
+    const gamesCheck = await getGamesDbDetailsv2(gamesIdsInLibrary)
+    if (gamesCheck) games.value = gamesCheck
   }
 
   isLoading.value = false
@@ -39,14 +43,18 @@ let noMoreGames = false
 
 const loadMoreGames = async () => {
   if (!games.value || !gamesDb.value || loadingScroll.value || noMoreGames) return
+  console.log('test')
+
   loadingScroll.value = true
   const newGamesUser = await getGamesDb(results, games.value[games.value.length - 1].id)
   if (newGamesUser) {
     const newGamesInLibrary = newGamesUser.filter((game) => game.isInLibrary)
     if (newGamesInLibrary) {
+      const gamesIdsInLibrary = newGamesInLibrary.map((game) => game.id)
+
+      const newGames = await getGamesDbDetailsv2(gamesIdsInLibrary)
+      if (newGames) games.value = games.value.concat(newGames)
       gamesDb.value = gamesDb.value.concat(newGamesInLibrary)
-      const newGames = await getGamesDbDetails(newGamesInLibrary)
-      games.value = games.value.concat(newGames)
     }
   } else {
     noMoreGames = true
