@@ -35,20 +35,22 @@ const handleSignOut = () => {
 </script>
 
 <template>
-  <header class="flex justify-between mb-10 bg-secondary rounded-2xl p-4">
+  <img src="@/assets/honeycomb.png" alt="honeycomb" class="absolute top-0 -right-20 -z-10 opacity-30" height="500" width="500">
+  <header class="flex justify-between mb-10 bg-secondary rounded-2xl px-2 p-2">
     <RouterLink class="flex gap-4 items-center" to="/home">
       <img alt="web logo" src="@/assets/pixel-heart.webp" width="27" height="27" />
-      <p class="text-black text-xl font-pixel">MyVideogameList</p>
+      <p class="text-primary text-xl font-pixel">MyVideogameList</p>
     </RouterLink>
 
     <div class="wrapper uppercase">
       <nav class="flex gap-2 menu items-center">
-        <RouterLink class="hover:bg-terciary-soft p-2 px-4 rounded-xl" to="/" v-if="isLoggedIn">My Library</RouterLink>
-        <RouterLink class="hover:bg-terciary-soft p-2 px-4 rounded-xl" to="/games">Games</RouterLink>
-        <RouterLink class="hover:bg-terciary-soft p-2 px-4 rounded-xl" to="/auth" v-if="!isLoggedIn">Sign In</RouterLink>
-        <RouterLink class="hover:bg-terciary-soft p-2 px-4 rounded-xl" :to="`/profile/${username}`" v-if="isLoggedIn">{{ username }}</RouterLink>
-        <a @click="handleSignOut" v-if="isLoggedIn" class="hover:bg-terciary p-2 px-4 rounded-xl uppercase cursor-pointer">Sign Out</a>
-        <SearchBar />
+        <!-- *:rounded-xl *:hover:bg-terciary-mute *:border-2 *:border-terciary-mute *:hover:border-secondary -->
+        <RouterLink  to="/" v-if="isLoggedIn">My Library</RouterLink>
+        <RouterLink  to="/games">Games</RouterLink>
+        <RouterLink  to="/auth" v-if="!isLoggedIn">Sign In</RouterLink>
+        <RouterLink  :to="`/profile/${username}`" v-if="isLoggedIn">{{ username }}</RouterLink>
+        <SearchBar class="hover:bg-secondary!" />
+        <a @click="handleSignOut" v-if="isLoggedIn" class="bg-terciary-mute hover:bg-terciary! uppercase cursor-pointer">Sign Out</a>
       </nav>
     </div>
   </header>

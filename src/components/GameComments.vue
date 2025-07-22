@@ -50,7 +50,7 @@ const getRandomPlaceholder = () => {
     <div class="flex gap-2">
       <textarea
         v-model="comment"
-        class="w-full bg-terciary-mute rounded p-1 text-secondary"
+        class="w-full bg-terciary-mute rounded p-1 text-primary"
         :placeholder="randomPlaceholder"
         @focusout="getRandomPlaceholder">
       </textarea>
