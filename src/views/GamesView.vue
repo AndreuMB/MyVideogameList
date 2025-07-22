@@ -81,10 +81,7 @@ const loadMoreGames = async () => {
   </InfiniteScroll>
   <div v-if="(!games || games.length <= 0) && !isLoading" class="flex items-center text-6xl">
     <img src="/src/assets/book.png" alt="book" />
-    <p>
-      NO GAMES IN YOUR LIBRARY, ADD THEM
-      <RouterLink to="/games" class="text-terciary hover:text-terciary-soft">HERE</RouterLink>
-    </p>
+    <h2>NO GAMES AVAILABLES, DONT ASK</h2>
   </div>
 </template>
 

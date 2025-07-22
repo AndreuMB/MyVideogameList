@@ -35,8 +35,10 @@ const loadGames = async () => {
   isLoading.value = false
 }
 
+let noMoreGames = false
+
 const loadMoreGames = async () => {
-  if (!games.value || !gamesDb.value || loadingScroll.value) return
+  if (!games.value || !gamesDb.value || loadingScroll.value || noMoreGames) return
   loadingScroll.value = true
   const newGamesUser = await getGamesDb(results, games.value[games.value.length - 1].id)
   if (newGamesUser) {
@@ -46,6 +48,8 @@ const loadMoreGames = async () => {
       const newGames = await getGamesDbDetails(newGamesInLibrary)
       games.value = games.value.concat(newGames)
     }
+  } else {
+    noMoreGames = true
   }
   loadingScroll.value = false
 }
@@ -74,10 +78,10 @@ const loadMoreGames = async () => {
 
   <div v-if="games.length <= 0 && !isLoading" class="flex items-center text-6xl">
     <img src="/src/assets/book.png" alt="book" />
-    <p>
+    <h2>
       NO GAMES IN YOUR LIBRARY, ADD THEM
       <RouterLink to="/games" class="text-terciary hover:text-terciary-soft">HERE</RouterLink>
-    </p>
+    </h2>
   </div>
 </template>
 

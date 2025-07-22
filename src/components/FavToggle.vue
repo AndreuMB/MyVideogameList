@@ -60,14 +60,14 @@ const toogleFavorite = async () => {
   <button
     v-if="!isOnFavorites"
     @click="toogleFavorite()"
-    class="font-medium rounded-lg text-sm p-2 px-4 text-primary bg-yellow-300! hover:bg-yellow-200!"
+    class="font-medium rounded-lg text-sm p-2 px-4 text-primary bg-terciary hover:bg-terciary-soft"
   >
     <i class="pi pi-star"></i>
   </button>
   <button
     v-else
     @click="toogleFavorite()"
-    class="font-medium rounded-lg text-sm p-2 px-4 text-primary bg-yellow-300! hover:bg-yellow-200!"
+    class="font-medium rounded-lg text-sm p-2 px-4 text-primary bg-terciary hover:bg-terciary-soft"
   >
     <i class="pi pi-star-fill"></i>
   </button>
