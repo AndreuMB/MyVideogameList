@@ -58,6 +58,7 @@ const toogleFavorite = async () => {
 
 <template>
   <button
+    type="button"
     v-if="!isOnFavorites"
     @click="toogleFavorite()"
     class="font-medium rounded-lg text-sm p-2 px-4 text-primary bg-terciary hover:bg-terciary-soft"

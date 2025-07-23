@@ -4,6 +4,8 @@ Organize, track, and share your video game journey. Add your favorite games, tra
 
 Built with Vue, Tailwind CSS, and Firebase, this app offers a clean interface and easy interactions for a smooth user experience.
 
+![alt text](https://github.com/AndreuMB/MyVideogameList/blob/master/src/assets/addGame.gif?raw=true 'Demo gif')
+
 ---
 
 ## ✨ Features
@@ -12,6 +14,9 @@ Built with Vue, Tailwind CSS, and Firebase, this app offers a clean interface an
 - 📚 **Personal Game Library**: Add games to your collection.
 - ✅ **Progress Tracking**: Keep track of your play status and achievements.
 - ⭐ **Ratings & Reviews**: Rate games you've played and help others.
+- 💬 **Comment Section**: Share your thoughts and read others' opinions on each game.
+- 🎨 **Profile Customization**: Personalize your profile with a username, avatar, and bio.
+- 👤 **User Profiles**: Visit other users' profiles to explore their favorite games.
 - 📄 **Game Info**: View detailed descriptions, covers, and release data.
 
 ---
@@ -19,11 +24,13 @@ Built with Vue, Tailwind CSS, and Firebase, this app offers a clean interface an
 ## 🚀 Tech Stack
 
 ### Frontend
+
 - [**Vue 3**](https://vuejs.org/) – Reactive frontend framework.
 - [**PrimeVue**](https://primevue.org/) – UI component library for Vue.
 - [**Tailwind CSS**](https://tailwindcss.com/) – CSS framework for responsive design.
 
 ### Backend & Database
+
 - [**Firebase**](https://firebase.google.com/) – Authentication and realtime database.
 - [**VueFire**](https://vuefire.vuejs.org/guide/getting-started.html) – Official bindings for Firebase with Vue.
 
@@ -48,6 +55,6 @@ npm run build
 ```
 
 ## 🙌 Acknowledgments
-Data sourced from GiantBomb API.
 
+Data sourced from GiantBomb API.
 Inspired by MyAnimeList.

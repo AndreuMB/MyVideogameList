@@ -18,7 +18,6 @@ const isInLibrary: Ref<boolean> = ref(false)
 const isCompleted: Ref<boolean> = ref(false)
 const userGameDb: Ref<UserGameDb | null> = ref(null)
 
-
 onMounted(() => {
   if (props.gamesDb) {
     userGameDb.value = props.gamesDb.find((gamedb) => gamedb.id == props.game.id) || null
@@ -36,7 +35,6 @@ const handleStateChange = async () => {
     isCompleted.value = userGameDb.value.state == 2
   }
 }
-
 </script>
 
 <template>

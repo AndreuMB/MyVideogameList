@@ -7,14 +7,14 @@ defineProps<{
 
 <template>
   <!-- <div class="buttons"> -->
-  <div class="blob-btn" :class="dark ? 'blob-btn-dark': ''">
+  <div class="blob-btn" :class="dark ? 'blob-btn-dark' : ''">
     {{ label }}
     <span class="blob-btn__inner">
       <span class="blob-btn__blobs">
-        <span class="blob-btn__blob" :class="dark ? 'blob-dark': ''"></span>
-        <span class="blob-btn__blob" :class="dark ? 'blob-dark': ''"></span>
-        <span class="blob-btn__blob" :class="dark ? 'blob-dark': ''"></span>
-        <span class="blob-btn__blob" :class="dark ? 'blob-dark': ''"></span>
+        <span class="blob-btn__blob" :class="dark ? 'blob-dark' : ''"></span>
+        <span class="blob-btn__blob" :class="dark ? 'blob-dark' : ''"></span>
+        <span class="blob-btn__blob" :class="dark ? 'blob-dark' : ''"></span>
+        <span class="blob-btn__blob" :class="dark ? 'blob-dark' : ''"></span>
       </span>
     </span>
   </div>
@@ -23,16 +23,23 @@ defineProps<{
     <defs>
       <filter id="goo">
         <feGaussianBlur in="SourceGraphic" result="blur" stdDeviation="10"></feGaussianBlur>
-        <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 21 -7" result="goo"></feColorMatrix>
+        <feColorMatrix
+          in="blur"
+          mode="matrix"
+          values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 21 -7"
+          result="goo"
+        ></feColorMatrix>
         <feBlend in2="goo" in="SourceGraphic" result="mix"></feBlend>
       </filter>
     </defs>
   </svg>
-<!-- </div> -->
+  <!-- </div> -->
 </template>
 
 <style scoped lang="scss">
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   margin: 0;
   padding: 0;
 }
@@ -67,11 +74,10 @@ $borderW: 0px;
   transition: 0.4s;
   border-radius: 0.7em;
   font-family: var(--font-pixel);
-  border: var(--terciary-color-mute),2px,solid;
-
+  border: var(--terciary-color-mute), 2px, solid;
 
   &:before {
-    content: "";
+    content: '';
     z-index: 1;
     position: absolute;
     left: 0;
@@ -81,7 +87,7 @@ $borderW: 0px;
   }
 
   &:after {
-    content: "";
+    content: '';
     z-index: -2;
     position: absolute;
     width: 100%;
@@ -121,21 +127,21 @@ $borderW: 0px;
   &__blob {
     position: absolute;
     top: $borderW;
-    width: 100% / $numOfBlobs;
+    width: calc(100% / $numOfBlobs);
     height: 100%;
     // background: var(--color-primary);
     background: var(--color-terciary-mute);
     border-radius: 100%;
-    transform: translate3d(0,150%,0) scale(1.7);
+    transform: translate3d(0, 150%, 0) scale(1.7);
     transition: transform 0.45s;
 
-    @supports(filter: url('#goo')) {
-      transform: translate3d(0,150%,0) scale(1.4);
+    @supports (filter: url('#goo')) {
+      transform: translate3d(0, 150%, 0) scale(1.4);
     }
 
     @for $i from 1 through $numOfBlobs {
       &:nth-child(#{$i}) {
-        left: ($i - 1) * (120% / $numOfBlobs);
+        left: ($i - 1) * calc(120% / $numOfBlobs);
         transition-delay: ($i - 1) * 0.08s;
       }
     }
@@ -143,14 +149,11 @@ $borderW: 0px;
     .blob-btn:hover & {
       transform: translateZ(0) scale(1.7);
 
-      @supports(filter: url('#goo')) {
+      @supports (filter: url('#goo')) {
         transform: translateZ(0) scale(1.4);
       }
     }
   }
-
-
-
 }
 
 .blob-dark {
