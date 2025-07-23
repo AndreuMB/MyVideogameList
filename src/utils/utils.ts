@@ -154,6 +154,15 @@ export const getGamesDb = async (
   return null
 }
 
+export const getGamesDbInLibrary = async () => {
+  const gamesUser = await getGamesDb()
+  if (gamesUser) {
+    const gamesInLibrary = gamesUser.filter((game) => game.isInLibrary)
+    return gamesInLibrary
+  }
+  return null
+}
+
 export const getGamesDbDetails = async (gamesDb: UserGameDb[]): Promise<Game[]> => {
   const gamesData: Game[] = []
 

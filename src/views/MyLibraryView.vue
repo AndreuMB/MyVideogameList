@@ -4,7 +4,7 @@ import { ref, type Ref } from 'vue'
 import GameCard from '@/components/GameCard.vue'
 import LoadingSpinner from '@/components/LoadingSpinner.vue'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
-import { getGamesDb, getGamesDbDetailsv2 } from '@/utils/utils'
+import { getGamesDbDetailsv2, getGamesDbInLibrary } from '@/utils/utils'
 import type { UserGameDb } from '@/interfaces/UserGameDb'
 import InfiniteScroll from '@/components/InfiniteScroll.vue'
 
@@ -15,8 +15,11 @@ const isLoading = ref(true)
 const gamesDb: Ref<UserGameDb[] | null> = ref(null)
 const loadingScroll: Ref<boolean> = ref(false)
 const results: number = 12
+let gamesInLibrary: UserGameDb[] | null = null
+let page = 1
 
 onAuthStateChanged(auth, async (user) => {
+  gamesInLibrary = await getGamesDbInLibrary()
   if (user) {
     loadGames()
   }
@@ -24,13 +27,12 @@ onAuthStateChanged(auth, async (user) => {
 
 const loadGames = async () => {
   isLoading.value = true
-  const gamesUser = await getGamesDb(results, 0)
 
-  if (gamesUser) {
-    const gamesInLibrary = gamesUser.filter((game) => game.isInLibrary)
-    gamesDb.value = gamesInLibrary
+  if (gamesInLibrary) {
+    const showGamesInLibrary = gamesInLibrary.slice(0, results)
+    gamesDb.value = showGamesInLibrary
 
-    const gamesIdsInLibrary = gamesInLibrary.map((game) => game.id)
+    const gamesIdsInLibrary = showGamesInLibrary.map((game) => game.id)
 
     const gamesCheck = await getGamesDbDetailsv2(gamesIdsInLibrary)
     if (gamesCheck) games.value = gamesCheck
@@ -42,20 +44,20 @@ const loadGames = async () => {
 let noMoreGames = false
 
 const loadMoreGames = async () => {
-  if (!games.value || !gamesDb.value || loadingScroll.value || noMoreGames) return
-  console.log('test')
+  if (!games.value || !gamesDb.value || loadingScroll.value || noMoreGames || !gamesInLibrary)
+    return
 
   loadingScroll.value = true
-  const newGamesUser = await getGamesDb(results, games.value[games.value.length - 1].id)
-  if (newGamesUser) {
-    const newGamesInLibrary = newGamesUser.filter((game) => game.isInLibrary)
-    if (newGamesInLibrary) {
-      const gamesIdsInLibrary = newGamesInLibrary.map((game) => game.id)
 
-      const newGames = await getGamesDbDetailsv2(gamesIdsInLibrary)
-      if (newGames) games.value = games.value.concat(newGames)
-      gamesDb.value = gamesDb.value.concat(newGamesInLibrary)
-    }
+  const newGamesInLibrary = gamesInLibrary.slice(results * page, results * page + results)
+
+  if (newGamesInLibrary && newGamesInLibrary.length > 0) {
+    const gamesIdsInLibrary = newGamesInLibrary.map((game) => game.id)
+
+    const newGames = await getGamesDbDetailsv2(gamesIdsInLibrary)
+    if (newGames) games.value = games.value.concat(newGames)
+    gamesDb.value = gamesDb.value.concat(newGamesInLibrary)
+    page++
   } else {
     noMoreGames = true
   }

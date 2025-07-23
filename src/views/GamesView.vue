@@ -52,7 +52,7 @@ const searchGames = async () => {
 }
 
 const loadMoreGames = async () => {
-  if (!games.value || loadingScroll.value) return
+  if (!games.value || loadingScroll.value || route.params.gameName) return
   loadingScroll.value = true
   page++
   const newGames = await getGamesOrderByRelease(
