@@ -318,7 +318,7 @@ export const changeGameRating = async (gameId: number, rating: number): Promise<
   set(gameUserRef, rating)
 
   const gameDb = await getGameDb(gameId)
-  const gameRef = ref(db, `games/${gameId}/`)
+  const gameRef = ref(db, `/games/${gameId}/`)
   // have valoration
   if (gameDb && gameDb.rating && gameDb.ratingContributors) {
     // user already rate
@@ -329,9 +329,9 @@ export const changeGameRating = async (gameId: number, rating: number): Promise<
       gameDb.rating += rating
       gameDb.ratingContributors += 1
     }
-    set(gameRef, gameDb)
+    update(gameRef, gameDb)
   } else {
-    set(gameRef, { rating, ratingContributors: 1 })
+    update(gameRef, { rating, ratingContributors: 1 })
   }
 }
 
@@ -339,7 +339,7 @@ export const getGameDb = async (gameId: number): Promise<GameDb | null> => {
   const user = await getCurrentUser()
   if (!user) return null
   const db = useDatabase()
-  const gameRef = ref(db, `games/${gameId}`)
+  const gameRef = ref(db, `/games/${gameId}`)
 
   const gameState = await get(gameRef)
   return gameState.val()

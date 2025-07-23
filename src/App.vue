@@ -35,7 +35,7 @@ const handleSignOut = () => {
 </script>
 
 <template>
-  <img src="@/assets/honeycomb.png" alt="honeycomb" class="absolute top-0 -right-20 -z-10 opacity-30" height="500" width="500">
+  <img src="@/assets/honeycomb.png" alt="honeycomb" class="absolute top-0 right-0 -z-10 opacity-30" height="450" width="450">
   <header class="flex justify-between mb-10 bg-secondary rounded-2xl px-2 p-2">
     <RouterLink class="flex gap-4 items-center" to="/home">
       <img alt="web logo" src="@/assets/pixel-heart.webp" width="27" height="27" />
