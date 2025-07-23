@@ -336,8 +336,6 @@ export const changeGameRating = async (gameId: number, rating: number): Promise<
 }
 
 export const getGameDb = async (gameId: number): Promise<GameDb | null> => {
-  const user = await getCurrentUser()
-  if (!user) return null
   const db = useDatabase()
   const gameRef = ref(db, `/games/${gameId}`)
 

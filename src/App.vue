@@ -45,13 +45,6 @@ const handleSignOut = () => {
 
     <div class="wrapper uppercase">
       <nav class="flex gap-2 menu items-center">
-        <!-- *:rounded-xl *:hover:bg-terciary-mute *:border-2 *:border-terciary-mute *:hover:border-secondary -->
-        <!-- <RouterLink  to="/" v-if="isLoggedIn">My Library</RouterLink> -->
-        <!-- <RouterLink  to="/games">Games</RouterLink> -->
-        <!-- <RouterLink  to="/auth" v-if="!isLoggedIn">Sign In</RouterLink> -->
-        <!-- <RouterLink  :to="`/profile/${username}`" v-if="isLoggedIn">{{ username }}</RouterLink> -->
-        <!-- <SearchBar class="hover:bg-secondary!" /> -->
-        <!-- <a @click="handleSignOut" v-if="isLoggedIn" class="bg-terciary-mute hover:bg-terciary! uppercase cursor-pointer">Sign Out</a> -->
         <RouterLink v-if="isLoggedIn" to="/">
           <HoneyButton label="My Library" />
         </RouterLink>
