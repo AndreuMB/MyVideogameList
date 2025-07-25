@@ -3,6 +3,7 @@ import type { GameDbComment } from '@/interfaces/GameDb';
 import type { User } from '@/interfaces/User';
 import { getUser } from '@/utils/utils';
 import { onMounted, ref, type Ref } from 'vue';
+import defaultProfileImage from '/src/assets/profile.png'
 
 const props = defineProps<{
   gameComment: GameDbComment
@@ -17,7 +18,7 @@ onMounted(async ()=> {
   <div v-if="userDb" class="flex gap-2">
      <img
         class="mr-2 rounded-full !w-[50px] !h-[50px]"
-        :src="userDb.picture || '/src/assets/profile.png'"
+        :src="userDb.picture || defaultProfileImage"
         :alt="userDb.username"
       />
     <div class="p-6 bg-secondary rounded-lg text-primary w-full">

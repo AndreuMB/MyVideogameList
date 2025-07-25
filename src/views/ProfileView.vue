@@ -29,9 +29,6 @@ const gamesDb: Ref<UserGameDb[] | null> = ref(null)
 const route = useRoute()
 const username = route.params.username.toString()
 
-
-const defaultProfilePicture = '/src/assets/profile.png'
-
 onMounted(async () => {
   isLoadingUser.value = true
   if (!username) {
@@ -86,7 +83,7 @@ const updateProfilePicture = async () => {
 
 const setDefaultPfP = () => {
   if (user.value) {
-    user.value.picture = defaultProfilePicture
+    user.value.picture = ''
   }
 }
 </script>
@@ -122,7 +119,7 @@ const setDefaultPfP = () => {
           alt="pfp"
           class="h-full rounded-full"
         />
-        <img v-else :src="defaultProfilePicture" alt="defaultPfp" class="h-full rounded-full" />
+        <img v-else src="/src/assets/profile.png" alt="defaultPfp" class="h-full rounded-full" />
         <button
           type="button"
           @click="() => (showModal = true)"

@@ -5,7 +5,7 @@ const search_text = ref('')
 </script>
 
 <template>
-  <form class="ml-2" @submit.prevent="$router.push(`/games/${search_text}`)">
+  <form @submit.prevent="$router.push(`/games/${search_text}`)">
     <div class="relative">
       <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-primary">
         <svg
