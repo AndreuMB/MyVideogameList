@@ -176,9 +176,6 @@ export const getGamesDbDetails = async (gamesDb: UserGameDb[]): Promise<Game[]> 
 
 export const getGamesDbDetailsv2 = async (gamesIds: number[]): Promise<Game[] | null> => {
   const fieldList = 'id,name,image'
-
-  console.log(gamesIds.toString().replace(/,/g, '|'))
-
   const filter = 'id:' + gamesIds.toString().replace(/,/g, '|')
 
   const games = await getGamesPromise(fieldList, filter)
