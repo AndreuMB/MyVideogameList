@@ -43,13 +43,9 @@ onMounted(async () => {
     return
   }
 
-
-
   const userdb = await getUser(checkUserId)
   userId.value = checkUserId
   user.value = userdb
-
-
 
   const gamesUser = await getGamesDb()
 
@@ -67,6 +63,10 @@ onMounted(async () => {
 const toogleEdit = () => {
   if (!user.value) return
   if (!user.value.username) return
+  if (!user.value.description) user.value.description = ''
+
+  console.log('desc', user.value.description)
+
   isEditing.value = !isEditing.value
   // save
   if (!isEditing.value) {
@@ -89,29 +89,35 @@ const setDefaultPfP = () => {
 </script>
 
 <template>
-  <div v-if="user === null && isLoadingUser==true">
+  <div v-if="user === null && isLoadingUser == true">
     <LoadingSpinner />
   </div>
   <div v-else-if="user === null">
     <UserNotFound />
   </div>
   <div v-else>
-    <div class="w-full flex justify-between items-center mb-5">
+    <div class="w-full md:flex justify-between items-center mb-5">
       <input
         v-if="isEditing"
         type="text"
-        class="text-6xl uppercase text-secondary bg-terciary-mute rounded"
+        class="text-6xl uppercase text-secondary bg-terciary-mute rounded w-full"
         v-model="user.username"
         required
       />
-      <h1 v-else class="text-6xl uppercase text-terciary font-pixel">{{ user.username }}</h1>
-      <button class="rounded" @click="toogleEdit">
+      <h1
+        v-else
+        id="username"
+        class="text-6xl uppercase text-terciary font-pixel overflow-x-scroll"
+      >
+        {{ user.username }}
+      </h1>
+      <button class="rounded mt-2" @click="toogleEdit">
         <i v-if="isEditing" class="pi pi-save text-2xl! px-3 py-2"></i>
         <i v-else class="pi pi-pen-to-square text-2xl! px-3 py-2"></i>
       </button>
     </div>
-    <div class="flex gap-10 mb-5 max-h-[400px]">
-      <div class="relative max-w-1/3 flex justify-center">
+    <div class="md:flex not-md:text-center gap-10 mb-20 md:mb-5 max-h-[400px]">
+      <div class="relative md:max-w-1/3 flex justify-center not-md:mb-5">
         <img
           v-if="user.picture"
           @error="setDefaultPfP"
@@ -155,7 +161,7 @@ const setDefaultPfP = () => {
       <div v-if="isLoading">
         <LoadingSpinner />
       </div>
-      <div v-else-if="!favGames && !isLoading">
+      <div v-else-if="(!favGames || favGames.length == 0) && !isLoading">
         <h2 class="text-4xl">NO FAVORITES</h2>
         <p class="text-2xl text-terciary">SO PIKY 🙄</p>
       </div>
@@ -182,5 +188,10 @@ button {
 
 button:hover {
   background-color: var(--color-terciary-soft);
+}
+
+#username {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox, Safari 18.2+, Chromium 121+ */
 }
 </style>

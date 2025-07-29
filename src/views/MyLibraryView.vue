@@ -7,6 +7,8 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { getGamesDbDetailsv2, getGamesDbInLibrary } from '@/utils/utils'
 import type { UserGameDb } from '@/interfaces/UserGameDb'
 import InfiniteScroll from '@/components/InfiniteScroll.vue'
+import ErrorMessage from '@/components/ErrorMessage.vue'
+import openBook from '@/assets/book.png'
 
 const games: Ref<Game[]> = ref([])
 
@@ -80,19 +82,12 @@ const loadMoreGames = async () => {
     <LoadingSpinner v-if="loadingScroll" />
   </InfiniteScroll>
 
-  <!-- <div
-    v-else
-    class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 xl:gap-x-8"
-  > -->
-  <!-- </div> -->
-
-  <div v-if="games.length <= 0 && !isLoading" class="flex items-center text-6xl">
-    <img src="/src/assets/book.png" alt="book" />
-    <h2>
-      NO GAMES IN YOUR LIBRARY, ADD THEM
-      <RouterLink to="/games" class="text-terciary hover:text-terciary-soft">HERE</RouterLink>
-    </h2>
-  </div>
+  <ErrorMessage
+    v-if="games.length <= 0 && !isLoading"
+    error_message="NO GAMES IN YOUR LIBRARY, ADD THEM"
+    redirect_message="HERE"
+    :image="openBook"
+  />
 </template>
 
 <style scoped></style>
