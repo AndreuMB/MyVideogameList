@@ -47,6 +47,7 @@ const toggleMenu = () => {
       <img alt="web logo" src="@/assets/pixel-heart.webp" width="27" height="27" />
       <p class="text-primary text-xl font-pixel">MyVideogameList</p>
     </RouterLink>
+
     <!-- Menu -->
     <div
       ref="menu"
@@ -56,13 +57,15 @@ const toggleMenu = () => {
       <MenuLinks :username="username" :isLoggedIn="isLoggedIn"></MenuLinks>
     </div>
   </header>
+
+  <!-- Phone Menu -->
   <div
     v-if="isMenuOpen"
     @click="toggleMenu"
-    class="absolute top-0 left-0 w-full h-full z-10 bg-primary opacity-50"
+    class="fixed top-0 left-0 w-full h-full z-10 bg-primary opacity-50"
   ></div>
   <nav
-    class="absolute top-0 left-0 bg-secondary w-auto h-full p-4 rounded-tr-2xl z-10 transition-transform duration-300 ease-in-out"
+    class="fixed top-0 left-0 bg-secondary w-auto h-full p-4 rounded-tr-2xl z-20 transition-transform duration-300 ease-in-out"
     :class="isMenuOpen ? 'translate-x-0' : '-translate-x-full'"
   >
     <div class="w-full text-right">
@@ -73,3 +76,4 @@ const toggleMenu = () => {
     </div>
   </nav>
 </template>
+<style scoped></style>

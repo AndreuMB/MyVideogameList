@@ -1,13 +1,22 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const search_text = ref('')
+const router = useRouter()
+
+const search = () => {
+  router.push(`/games/${search_text.value}`)
+  // search_text.value = ''
+}
 </script>
 
 <template>
-  <form @submit.prevent="$router.push(`/games/${search_text}`)">
+  <form @submit.prevent="search">
     <div class="relative">
-      <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-primary">
+      <div
+        class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none text-primary"
+      >
         <svg
           class="w-4 h-4"
           aria-hidden="true"

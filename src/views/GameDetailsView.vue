@@ -100,9 +100,9 @@ const handleStateChange = async () => {
       </div>
       <p class="text-2xl">{{ game.date_added.split(' ')[0] }}</p>
     </div>
-    <div class="flex gap-10">
-      <div class="max-w-1/4">
-        <img class="" :src="game.image.medium_url" alt="gameImg" />
+    <div class="md:flex gap-10">
+      <div class="md:max-w-1/4 not-md:w-full">
+        <img :src="game.image.medium_url" alt="gameImg" />
         <GameRaiting
           v-if="userGameDb && userGameDb.isInLibrary && userGameDb.state == 2"
           :game-id="game.id"
@@ -116,8 +116,8 @@ const handleStateChange = async () => {
           {{ platform.name }}
         </p>
       </div>
-      <div class="w-3/4">
-        <h2 class="text-2xl text-terciary font-pixel">DESCRIPTION</h2>
+      <div class="md:max-w-3/4 not-md:w-full not-md:mt-5">
+        <h2 class="text-2xl not-md:w-full text-terciary font-pixel">DESCRIPTION</h2>
         <div v-if="game.description" :class="$style.description">
           <div ref="description" class="description"></div>
           <span @click="toogleHidden" class="text-terciary hover:text-terciary-soft cursor-pointer">

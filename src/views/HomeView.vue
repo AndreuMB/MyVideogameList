@@ -52,8 +52,10 @@ onMounted(async () => {
 </script>
 <template>
   <div class="text-center">
-    <h1 class="text-9xl mb-10 text-terciary font-pixel">MyVideogameList</h1>
-    <p class="text-4xl">Track all your favorite games in one place!</p>
+    <h1 class="not-md:text-4xl md:text-6xl lg:text-8xl mb-10 text-terciary font-pixel">
+      MyVideogameList
+    </h1>
+    <h2 class="not-md:text-2xl text-4xl">Track all your favorite games in one place!</h2>
     <div class="m-10">
       <LoadingSpinner v-if="loading" />
       <Carousel
@@ -66,7 +68,13 @@ onMounted(async () => {
         :autoplayInterval="3000"
       >
         <template #item="game">
-          <GameCard :gamesDb="null" class="m-5" :game="game.data" :isLoggedIn="false" :elipsis="true" />
+          <GameCard
+            :gamesDb="null"
+            class="m-5"
+            :game="game.data"
+            :isLoggedIn="false"
+            :elipsis="true"
+          />
         </template>
       </Carousel>
     </div>

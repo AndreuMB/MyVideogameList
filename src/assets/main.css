@@ -11,8 +11,9 @@
   height: 100%;
 }
 
-h1, h2 {
-  font-family: var(--font-pixel)
+h1,
+h2 {
+  font-family: var(--font-pixel);
 }
 
 .background-secondary {
