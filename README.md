@@ -6,9 +6,14 @@ Organize, track, and share your video game journey. Add your favorite games, tra
 
 Fully responsive app built with Vue, Tailwind CSS, and Firebase, this app offers a clean interface and easy interactions for a smooth user experience.
 
+<!-- <p float="left">
+  <img src="src/assets/addGame.gif" alt="phoneDemo" width="70%"/>
+  <img src="src/assets/phoneDemo.gif" alt="phoneDemo" width="16%"/>
+</p> -->
+
 |                                                      Computer demo                                                       |                             Phone demo                              |
 | :----------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------: |
-| ![alt text](https://github.com/AndreuMB/MyVideogameList/blob/master/src/assets/addGame.gif?raw=true 'computer demo gif') | <img src="src/assets/phoneDemo.gif" alt="phoneDemo" width="400px"/> |
+| ![alt text](https://github.com/AndreuMB/MyVideogameList/blob/master/src/assets/addGame.gif?raw=true 'computer demo gif') | <img src="src/assets/phoneDemo.gif" alt="phoneDemo" width="200px"/> |
 
 ## ✨ Features
 
