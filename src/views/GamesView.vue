@@ -8,6 +8,8 @@ import { getGamesDb, getGamesOrderByRelease, searchGamesByName } from '@/utils/u
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { onMounted, ref, watch, type Ref } from 'vue'
 import { useRoute } from 'vue-router'
+import ErrorMessage from '@/components/ErrorMessage.vue'
+import openBook from '@/assets/book.png'
 
 const games: Ref<Game[] | undefined> = ref([])
 const route = useRoute()
@@ -79,10 +81,12 @@ const loadMoreGames = async () => {
     />
     <LoadingSpinner v-if="loadingScroll" />
   </InfiniteScroll>
-  <div v-if="(!games || games.length <= 0) && !isLoading" class="flex items-center text-6xl">
-    <img src="/src/assets/book.png" alt="book" />
-    <h2>NO GAMES AVAILABLES, DONT ASK</h2>
-  </div>
+  <ErrorMessage
+    v-if="(!games || games.length <= 0) && !isLoading"
+    error_message="NO GAMES FOUND, DONT ASK"
+    redirect_message="LETS GET BACK"
+    :image="openBook"
+  />
 </template>
 
 <style scoped></style>
