@@ -56,7 +56,7 @@ onMounted(async () => {
       MyVideogameList
     </h1>
     <h2 class="not-md:text-2xl text-4xl">Track all your favorite games in one place!</h2>
-    <div class="m-10">
+    <div class="pt-10 md:p-10">
       <LoadingSpinner v-if="loading" />
       <Carousel
         v-else
